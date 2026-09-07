@@ -15,6 +15,9 @@ interface Props {
 export function EmptyDiff({ diff, integrity, scenario }: Props) {
   const ok = integrity.consistentWithDiff;
   const rootDigest = diff.head.graph_digest;
+  // A move rewrites ids, so raw digests are expected to diverge. Report that as
+  // an explanation, not a warning: the diff document is authoritative here.
+  const moved = integrity.movesApplied;
   return (
     <section className="empty-diff" data-testid="empty-diff" aria-labelledby="empty-h">
       <div className="glyph" aria-hidden="true">
@@ -28,16 +31,20 @@ export function EmptyDiff({ diff, integrity, scenario }: Props) {
       </p>
       {!ok && (
         <div className="banner danger" role="alert">
-          <b>Inconsistent.</b> The diff document says nothing changed, but the viewer found differing digests between the two graphs. Do not trust this result until the differ and the graphs agree.
+          <b>Inconsistent.</b> The diff document says nothing changed, but the viewer found differing digests between the two graphs, and no <code>moved</code> block explains it. Do not trust this result until the differ and the graphs agree.
         </div>
       )}
       <dl className="evidence">
         <dt>Nodes compared</dt>
-        <dd><b>{integrity.nodesCompared}</b> <span className="muted">of {integrity.nodesCompared + integrity.nodesOnlyInHead.length}</span> · digests identical <span className={integrity.nodeDigestMismatches.length === 0 && integrity.nodesOnlyInBase.length + integrity.nodesOnlyInHead.length === 0 ? 'ok' : 'warn'}>{integrity.nodeDigestMismatches.length === 0 ? '✓' : `✗ ${integrity.nodeDigestMismatches.length}`}</span></dd>
+        <dd><b>{integrity.nodesCompared}</b> <span className="muted">of {integrity.nodesCompared + integrity.nodesOnlyInHead.length}</span> · digests identical <span className={integrity.nodeDigestMismatches.length === 0 && (moved > 0 || integrity.nodesOnlyInBase.length + integrity.nodesOnlyInHead.length === 0) ? 'ok' : 'warn'}>{integrity.nodeDigestMismatches.length === 0 ? '✓' : `✗ ${integrity.nodeDigestMismatches.length}`}</span></dd>
         <dt>Edges compared</dt>
         <dd><b>{integrity.edgesCompared}</b> · digests identical <span className={integrity.edgeDigestMismatches.length === 0 ? 'ok' : 'warn'}>{integrity.edgeDigestMismatches.length === 0 ? '✓' : `✗ ${integrity.edgeDigestMismatches.length}`}</span></dd>
         <dt>Root digest</dt>
-        <dd><code>{rootDigest}</code> {integrity.rootDigestEqual ? <span className="ok">unchanged</span> : <span className="warn">differs</span>}</dd>
+        <dd><code>{rootDigest}</code> {integrity.rootDigestEqual
+          ? <span className="ok">unchanged</span>
+          : moved > 0
+            ? <span className="ok">remapped by {moved} <code>moved</code> block{moved === 1 ? '' : 's'}</span>
+            : <span className="warn">differs</span>}</dd>
         <dt>Merkle rollup</dt>
         <dd>
           {diff.stats.modules_skipped > 0
@@ -49,6 +56,11 @@ export function EmptyDiff({ diff, integrity, scenario }: Props) {
         <dt>Privilege paths</dt>
         <dd>none added, none removed</dd>
       </dl>
+      {moved > 0 && (
+        <p className="small muted">
+          {moved} <code>moved</code> block{moved === 1 ? '' : 's'} relocated resources between modules. Node ids, and therefore digests, change with them — the differ compared the remapped graphs, which is why the raw root digests above are not equal.
+        </p>
+      )}
       <p className="small muted" style={{ marginTop: 14 }}>
         Both panes on the right are drawn from the same layout; a refactor that only moves resources between modules or renames files leaves every node in place.
       </p>

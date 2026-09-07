@@ -144,6 +144,10 @@ export interface UnevaluatedEntry {
 }
 
 export interface Diff {
+  /** `moved {}` blocks the differ applied to the base graph before comparing
+   *  (SCHEMA.md 6.1). Non-empty means base node ids were rewritten, so the raw
+   *  graphs are expected to differ. */
+  moves_applied?: { scope_key: string; from: string; to: string }[];
   schema_version: '1.0';
   base: { ref: string; graph_digest: string };
   head: { ref: string; graph_digest: string };

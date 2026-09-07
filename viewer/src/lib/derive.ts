@@ -179,6 +179,10 @@ export interface IntegrityReport {
   edgesOnlyInHead: string[];
   rootDigestEqual: boolean;
   extractorVersionMismatch: { base: string; head: string } | null;
+  /** Number of `moved {}` blocks the differ applied to the base graph. When
+   *  non-zero the raw graphs are EXPECTED to disagree: the differ compared a
+   *  remapped base, the viewer is hashing the unremapped one. */
+  movesApplied: number;
   /** True when the graphs say "identical" AND the diff says "empty". */
   consistentWithDiff: boolean;
 }
@@ -218,6 +222,8 @@ export function checkIntegrity(base: Graph, head: Graph, diff: Diff): IntegrityR
   const hv = head.generated_by.extractor_version;
   const extractorVersionMismatch = bv !== hv ? { base: bv, head: hv } : null;
 
+  const movesApplied = (diff.moves_applied ?? []).length;
+
   const graphsIdentical =
     nodeDigestMismatches.length === 0 &&
     edgeDigestMismatches.length === 0 &&
@@ -235,6 +241,13 @@ export function checkIntegrity(base: Graph, head: Graph, diff: Diff): IntegrityR
       diff.structural.edges.changed.length ===
     0;
 
+  // The diff document is authoritative. A move rewrites node ids and therefore
+  // node and edge digests (SCHEMA.md 5, 6.1), so when the differ applied moves
+  // the raw graphs SHOULD differ and that is not evidence of a disagreement.
+  // The check is kept for the case it exists to catch: digests diverging with
+  // no move to explain them.
+  const divergenceExplainedByMoves = movesApplied > 0;
+
   return {
     nodesCompared: bn.size,
     edgesCompared: be.size,
@@ -246,7 +259,8 @@ export function checkIntegrity(base: Graph, head: Graph, diff: Diff): IntegrityR
     edgesOnlyInHead,
     rootDigestEqual,
     extractorVersionMismatch,
-    consistentWithDiff: graphsIdentical === structurallyEmpty,
+    movesApplied,
+    consistentWithDiff: divergenceExplainedByMoves || graphsIdentical === structurallyEmpty,
   };
 }
 

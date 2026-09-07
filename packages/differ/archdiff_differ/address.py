@@ -7,7 +7,7 @@ field.  The only link is the ``module.<name>.`` prefix of a node's
 (section 6).  This module derives a *ModuleKey* -- a tuple of module names --
 from both so they can be matched.
 
-The derivation is a heuristic, so ``permdiff.structural`` never trusts it
+The derivation is a heuristic, so ``archdiff_differ.structural`` never trusts it
 blindly: every module it actually compares is re-hashed and checked against the
 document's digest (see ``structural.verify_compared_modules``).
 """

@@ -16,8 +16,8 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "bench"))
 
-from permdiff import Graph, diff_graphs  # noqa: E402
-from permdiff.structural import full_compare, structural_diff, verify_all_digests  # noqa: E402
+from archdiff_differ import Graph, diff_graphs  # noqa: E402
+from archdiff_differ.structural import full_compare, structural_diff, verify_all_digests  # noqa: E402
 from synth import generate, mutate  # noqa: E402
 
 GROUPS, LEAVES, ROLES = 20, 25, 80   # 20*25*(2*80+40+1) = 100,500 nodes + 2

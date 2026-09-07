@@ -7,8 +7,8 @@ additional provenance fields.  Divergences are documented in the README.
 """
 import pytest
 
-from permdiff import Graph, diff_graphs
-from permdiff.differ import is_empty_doc
+from archdiff_differ import Graph, diff_graphs
+from archdiff_differ.differ import is_empty_doc
 
 
 @pytest.fixture(scope="module")

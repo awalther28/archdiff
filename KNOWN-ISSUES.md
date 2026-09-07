@@ -11,7 +11,7 @@ emits a module tree whose second level is a per-plan label (`mgmt`, `prod`),
 while the differ derives membership from the `module.<name>.` prefix of a
 Terraform address, and a plan label is not an address.
 
-Consequence: `permdiff` cannot verify the rollups, so it refuses to prune and
+Consequence: `archdiff-differ` cannot verify the rollups, so it refuses to prune and
 falls back to full O(V+E) comparison, emitting a warning. **Results are
 correct** — the fallback is the safe direction, and it is loud rather than
 silent — but the Merkle optimisation is inactive on real graphs and the warning
@@ -63,4 +63,4 @@ than inferred, absent for the common single-deployment-per-account case.
 
 ## 6. Package naming is inconsistent
 
-The extractor is `archdiff_extractor`; the differ is `permdiff`.
+The extractor is `archdiff_extractor`; the differ is `permdiff`. RESOLVED: both are now archdiff_*.

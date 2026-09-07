@@ -14,7 +14,7 @@ subtree.  ``stats.modules_skipped`` counts every module not descended into
 O(1) cut-offs themselves.
 
 Safety net.  Module membership of nodes/edges is derived from Terraform
-addresses (see ``permdiff.address``) because the schema does not state it.
+addresses (see ``archdiff_differ.address``) because the schema does not state it.
 Any mis-assignment that could hide a change necessarily involves a module we
 *did* compare, so every compared module is re-hashed from its buckets and
 checked against the document digest.  If that check fails the result is thrown
@@ -218,7 +218,7 @@ def verify_all_digests(g: Graph) -> List[str]:
     """Full O(V+E) audit of a document against canonical.py: node digests, edge
     digests and the module rollup under this package's membership rule.  Not
     used by the diff itself (it would defeat the prune); used by tests and by
-    ``permdiff verify``."""
+    ``archdiff_differ verify``."""
     from .canonical import edge_digest, node_digest
     problems: List[str] = []
     for nid, n in g.nodes.items():

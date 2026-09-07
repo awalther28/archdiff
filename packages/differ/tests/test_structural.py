@@ -3,11 +3,11 @@ import json
 
 import pytest
 
-from permdiff import Graph
-from permdiff.address import (UNASSIGNED_KEY, module_key_of_address, module_key_of_path,
+from archdiff_differ import Graph
+from archdiff_differ.address import (UNASSIGNED_KEY, module_key_of_address, module_key_of_path,
                               split_address)
-from permdiff.builder import GraphBuilder, scope
-from permdiff.structural import full_compare, structural_diff, verify_all_digests
+from archdiff_differ.builder import GraphBuilder, scope
+from archdiff_differ.structural import full_compare, structural_diff, verify_all_digests
 
 SC = scope("111122223333")
 
@@ -150,7 +150,7 @@ def test_misbucketed_node_cannot_hide_a_change():
     head = base.clone()
     head.node(SC, "module.m1.module.leaf0.aws_iam_role.r", "principal", "changed")
     bd, hd = base.build(), head.build()
-    from permdiff.canonical import module_digest
+    from archdiff_differ.canonical import module_digest
     # In both documents, pretend m1/leaf0's role belongs to m0/leaf0's rollup
     for doc in (bd, hd):
         nodes = {n["id"]: n for n in doc["nodes"]}

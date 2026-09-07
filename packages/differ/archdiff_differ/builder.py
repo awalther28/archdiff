@@ -1,9 +1,9 @@
 """Small builder for schema-conformant Permission Graph v1 documents.
 
 Used by the test-suite and by ``bench/synth.py``.  It is the *only* producer
-of graphs inside this package and it uses ``permdiff.canonical`` for every
+of graphs inside this package and it uses ``archdiff_differ.canonical`` for every
 digest, so a graph it builds is exactly what SCHEMA.md section 5 prescribes
-(``permdiff verify`` confirms this for every generated graph in the tests).
+(``archdiff_differ verify`` confirms this for every generated graph in the tests).
 It is not the extractor and knows nothing about Terraform.
 """
 import copy

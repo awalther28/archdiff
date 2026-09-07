@@ -171,7 +171,7 @@
     "catalog": "bundled-2026-09",
     "catalog_services": "iam, kms, s3, secretsmanager, sts",
     "limits": "wildcard expansion covers only the bundled catalog (bundled-2026-09: s3, sts, iam, kms, secretsmanager); privilege paths bounded to 4 hops",
-    "name": "permdiff",
+    "name": "archdiff-differ",
     "version": "0.1.0"
   },
   "unevaluated": [

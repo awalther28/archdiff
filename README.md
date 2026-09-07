@@ -51,9 +51,9 @@ python -m archdiff_extractor \
     --plan plans/prod.plan.json --root prod --src live/prod \
     --out head.graph.json
 
-python -m permdiff diff --base base.graph.json --head head.graph.json --out diff.json
-python -m permdiff render diff.json          # markdown for a PR comment
-python -m permdiff verify head.graph.json    # re-hash every module rollup
+python -m archdiff_differ diff --base base.graph.json --head head.graph.json --out diff.json
+python -m archdiff_differ render --diff diff.json     # markdown for a PR comment
+python -m archdiff_differ verify --graph head.graph.json  # re-hash every module rollup
 ```
 
 Merging several plans into one graph is what makes cross-root privilege paths

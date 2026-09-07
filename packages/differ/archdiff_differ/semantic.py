@@ -2,7 +2,7 @@
 
 a) Effective capabilities per principal: principal -attaches-> policy -grants->
    target, Allow/Deny resolved with explicit-deny-wins, wildcards expanded
-   against ``permdiff.catalog`` (five services only).
+   against ``archdiff_differ.catalog`` (five services only).
 b) Privilege paths: simple paths over ``can_assume`` edges from entry
    principals, at most MAX_HOPS hops; ``crosses_scopes`` when the path touches
    more than one ``scope.key``.

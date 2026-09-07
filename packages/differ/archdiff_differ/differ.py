@@ -85,7 +85,7 @@ def diff_graphs(base: Graph, head: Graph, base_ref: str = "base", head_ref: str 
         "findings": findings,
         "unevaluated": unevaluated,
         "stats": stats,
-        "tool": {"name": "permdiff", "version": __version__,
+        "tool": {"name": "archdiff-differ", "version": __version__,
                  "catalog": CATALOG_VERSION,
                  "catalog_services": ", ".join(sorted(SERVICES)),
                  "limits": CATALOG_NOTE + f"; privilege paths bounded to {max_hops} hops"},

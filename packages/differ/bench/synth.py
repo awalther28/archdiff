@@ -9,7 +9,7 @@ wildcard node, an attaches edge and a grants edge per principal, and a short
 can_assume chain, spread over two scopes.  Node count per leaf is
 2*roles + roles//2 + 1, so 20 x 25 x 40 gives 20 x 25 x 101 = 50,500 nodes;
 ``--roles 80`` gives ~100k.  Every digest and every module rollup comes from
-``permdiff.canonical``; ``permdiff verify`` passes on the output.
+``archdiff_differ.canonical``; ``archdiff_differ verify`` passes on the output.
 
 ``mutate`` changes exactly ONE grants edge in one leaf (widening it to s3:*)
 and recomputes the rollups on that leaf's root path -- the minimal PR.
@@ -22,10 +22,10 @@ import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-from permdiff.address import module_key_of_path  # noqa: E402
-from permdiff.builder import GraphBuilder, scope  # noqa: E402
-from permdiff.canonical import edge_digest  # noqa: E402
-from permdiff.graph import Graph  # noqa: E402
+from archdiff_differ.address import module_key_of_path  # noqa: E402
+from archdiff_differ.builder import GraphBuilder, scope  # noqa: E402
+from archdiff_differ.canonical import edge_digest  # noqa: E402
+from archdiff_differ.graph import Graph  # noqa: E402
 
 PROD = scope("111122223333", root_module="live/prod")
 MGMT = scope("999988887777", root_module="live/mgmt")
@@ -63,7 +63,7 @@ def mutate(doc: dict, leaf: str) -> dict:
     """Widen one statement in module ``g{i}.l{j}`` (leaf = "i/j") and recompute
     the module rollups (SCHEMA.md section 5) so the document stays honest.
     An extractor that emitted stale rollups here would defeat the prune --
-    ``permdiff verify`` exists to catch exactly that."""
+    ``archdiff_differ verify`` exists to catch exactly that."""
     i, j = (int(x) for x in leaf.split("/"))
     pre = f"module.g{i}.module.l{j}."
     target_eid = None

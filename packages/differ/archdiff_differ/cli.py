@@ -1,8 +1,8 @@
 """Command line interface.
 
-    permdiff diff   --base base.graph.json --head head.graph.json --out diff.json
-    permdiff render --diff diff.json --out comment.md
-    permdiff verify graph.json
+    archdiff_differ diff   --base base.graph.json --head head.graph.json --out diff.json
+    archdiff_differ render --diff diff.json --out comment.md
+    archdiff_differ verify graph.json
 """
 import argparse
 import json
@@ -85,7 +85,7 @@ def _cmd_verify(a: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="permdiff", description=__doc__,
+    p = argparse.ArgumentParser(prog="archdiff_differ", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
 

@@ -20,8 +20,8 @@ import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-from permdiff import Graph, diff_graphs  # noqa: E402
-from permdiff.structural import full_compare, structural_diff  # noqa: E402
+from archdiff_differ import Graph, diff_graphs  # noqa: E402
+from archdiff_differ.structural import full_compare, structural_diff  # noqa: E402
 from synth import generate, mutate  # noqa: E402
 
 

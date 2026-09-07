@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "permdiff"
+name = "archdiff-differ"
 version = "0.1.0"
 description = "Differ for Permission Graph v1 documents: structural (Merkle) + semantic layers"
 requires-python = ">=3.9"
@@ -13,10 +13,10 @@ dependencies = []
 test = ["pytest>=7"]
 
 [project.scripts]
-permdiff = "permdiff.cli:main"
+archdiff-diff = "archdiff_differ.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["permdiff*"]
+include = ["archdiff_differ*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

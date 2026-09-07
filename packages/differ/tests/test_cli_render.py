@@ -5,10 +5,10 @@ import sys
 
 import pytest
 
-from permdiff.builder import GraphBuilder, scope
-from permdiff.cli import main
-from permdiff.render import render_markdown
-from permdiff import Graph, diff_graphs
+from archdiff_differ.builder import GraphBuilder, scope
+from archdiff_differ.cli import main
+from archdiff_differ.render import render_markdown
+from archdiff_differ import Graph, diff_graphs
 from conftest import FIXTURES, PKG
 
 
@@ -35,7 +35,7 @@ def test_cli_render_subcommand(tmp_path):
     out = tmp_path / "diff.json"
     main(["diff", "--base", os.path.join(FIXTURES, "base.graph.json"),
           "--head", os.path.join(FIXTURES, "refactor-noop.graph.json"), "--out", str(out)])
-    r = subprocess.run([sys.executable, "-m", "permdiff", "render", "--diff", str(out)],
+    r = subprocess.run([sys.executable, "-m", "archdiff_differ", "render", "--diff", str(out)],
                        cwd=PKG, capture_output=True, text=True, check=True)
     assert r.stdout.startswith("**No permission changes**")
     assert "1 of 1 module(s) skipped by Merkle rollup (verified)" in r.stdout

@@ -3,10 +3,10 @@ import random
 
 import pytest
 
-from permdiff import Graph, diff_graphs
-from permdiff.builder import GraphBuilder, scope
-from permdiff.catalog import CATALOG, expand_action, expand_actions
-from permdiff.semantic import (CONDITIONAL, CONFIRMED, TrustGraph, capabilities_of,
+from archdiff_differ import Graph, diff_graphs
+from archdiff_differ.builder import GraphBuilder, scope
+from archdiff_differ.catalog import CATALOG, expand_action, expand_actions
+from archdiff_differ.semantic import (CONDITIONAL, CONFIRMED, TrustGraph, capabilities_of,
                                enumerate_paths, paths_through, semantic_diff)
 
 MGMT = scope("999988887777")

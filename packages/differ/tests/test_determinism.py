@@ -8,13 +8,13 @@ import sys
 
 import pytest
 
-from permdiff import Graph, diff_graphs, dumps
+from archdiff_differ import Graph, diff_graphs, dumps
 from conftest import FIXTURES, PKG
 
 
 def _run_cli(base, head, out, seed, extra=()):
     env = dict(os.environ, PYTHONHASHSEED=str(seed))
-    subprocess.run([sys.executable, "-m", "permdiff", "diff", "--base", base, "--head", head,
+    subprocess.run([sys.executable, "-m", "archdiff_differ", "diff", "--base", base, "--head", head,
                     "--out", out, "--base-ref", "main", "--head-ref", "pr-1", *extra],
                    cwd=PKG, env=env, check=True)
     with open(out, "rb") as f:

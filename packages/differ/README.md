@@ -1,4 +1,4 @@
-# permdiff -- Permission Graph v1 differ
+# archdiff_differ -- Permission Graph v1 differ
 
 Two Permission Graph v1 documents in, one section-7 diff document (plus a
 PR-comment markdown rendering) out.  Python 3.9+, standard library only, no
@@ -6,16 +6,16 @@ network.  `../../schema/SCHEMA.md` is normative; where this README and the
 schema disagree, the schema wins and this README is wrong.
 
 ```
-permdiff diff   --base base.graph.json --head head.graph.json --out diff.json \
+archdiff_differ diff   --base base.graph.json --head head.graph.json --out diff.json \
                 [--base-ref main --head-ref pr-42] [--markdown comment.md] \
                 [--no-merkle] [--full-semantic] [--max-hops 4] [--stats] [--fail-on high]
-permdiff render --diff diff.json [--out comment.md]
-permdiff verify graph.json ...        # audit every digest and rollup against canonical.py
+archdiff_differ render --diff diff.json [--out comment.md]
+archdiff_differ verify graph.json ...        # audit every digest and rollup against canonical.py
 python -m pytest                      # ~135 tests, ~20 s (the 100k-node perf test is ~10 s of that)
 python bench/run.py                   # reproduce the performance table below
 ```
 
-`permdiff/canonical.py` is a byte-for-byte copy of `schema/canonical.py`
+`archdiff_differ/canonical.py` is a byte-for-byte copy of `schema/canonical.py`
 (asserted by `tests/test_canonical_copy.py`, which also asserts that no other
 module in the package touches `hashlib`).  Digests are never reimplemented.
 
@@ -73,8 +73,8 @@ on a 100k-node graph is O(1) after parsing (`test_unchanged_big_graph_is_o1`).
 **Trust boundary.**  The prune trusts unchanged rollups exactly as section 5
 intends.  An extractor that emits a *stale* rollup (module digest unchanged,
 contents changed) defeats it silently -- this happened once during
-development, in the bench generator's mutation step, and `permdiff verify`
-caught it.  Run `permdiff verify` in the extractor's own tests.
+development, in the bench generator's mutation step, and `archdiff_differ verify`
+caught it.  Run `archdiff_differ verify` in the extractor's own tests.
 
 ### Stage 2 -- semantic
 
@@ -279,4 +279,4 @@ differences:
 * Paths are simple paths of at most 4 hops from entry nodes; a densely
   connected trust graph can have many, and every prefix is reported.
 * The prune's safety argument assumes the extractor's *unchanged* rollups are
-  honest (section 5).  `permdiff verify` audits a document in O(V+E).
+  honest (section 5).  `archdiff_differ verify` audits a document in O(V+E).

@@ -6,9 +6,9 @@ every array, both stages -- and must say so affirmatively.
 """
 import pytest
 
-from permdiff import Graph, diff_graphs, dumps
-from permdiff.differ import is_empty_doc
-from permdiff.render import render_markdown
+from archdiff_differ import Graph, diff_graphs, dumps
+from archdiff_differ.differ import is_empty_doc
+from archdiff_differ.render import render_markdown
 from conftest import all_arrays
 
 

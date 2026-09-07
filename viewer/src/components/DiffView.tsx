@@ -4,7 +4,7 @@ import type { Diff, Graph, Scenario } from '../schema/types';
 import { buildDeltaIndex, checkIntegrity, collectUnknowns, isEmptyDiff, unionGraph } from '../lib/derive';
 import { layoutGraph } from '../layout/layout';
 import { resolveFocus, type Focus, type Selection } from '../lib/focus';
-import { FindingsPanel } from './FindingsPanel';
+import { FindingsPanel, findingKey } from './FindingsPanel';
 import { UnevaluatedPanel } from './UnevaluatedPanel';
 import { EmptyDiff } from './EmptyDiff';
 import { SplitView } from './SplitView';
@@ -26,7 +26,17 @@ export function DiffView({ scenario, base, head, diff }: Props) {
   const unknowns = useMemo(() => collectUnknowns(base, head, diff), [base, head, diff]);
   const empty = isEmptyDiff(diff);
 
-  const [focus, setFocus] = useState<Focus | null>(null);
+  // Focus the top-ranked finding on load. Without it every PR opens on the same
+  // zoomed-out estate -- the delta is one edge among dozens, so three different
+  // pull requests are visually indistinguishable until you click something. The
+  // empty diff has no findings and correctly stays unfocused.
+  const [focus, setFocus] = useState<Focus | null>(() => {
+    const top = (diff.findings ?? [])[0];
+    if (!top) return null;
+    const ids = [...(top.node_ids ?? [])];
+    if (!ids.length && !top.edge_ids?.length) return null;
+    return { key: findingKey(top, 0), nodeIds: ids, edgeIds: top.edge_ids };
+  });
   const [selected, setSelected] = useState<Selection | null>(null);
   const focusSets = useMemo(() => resolveFocus(focus, union), [focus, union]);
 

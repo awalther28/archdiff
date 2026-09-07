@@ -44,7 +44,7 @@ export function FindingsPanel({ diff, head, base, delta, focus, onFocus }: Props
   );
 }
 
-function findingKey(f: Finding, i: number) {
+export function findingKey(f: Finding, i: number) {
   return `finding:${f.rank ?? i}:${f.title}`;
 }
 

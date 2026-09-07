@@ -22,10 +22,11 @@ describe('findings panel', () => {
     expect(cards[1]).toHaveTextContent('Second finding');
   });
 
-  it('clicking a finding focuses its nodes in both panes and dims the rest', () => {
+  it('focuses the top finding on load, in both panes, dimming the rest', () => {
     render(<DiffView scenario={scenario} base={baseGraph()} head={headGraph()} diff={starDiff()} />);
     const card = screen.getByTestId('finding');
-    fireEvent.click(card);
+    // Focused on load: without this every PR opens on the same zoomed-out
+    // estate and different diffs look identical.
     expect(card).toHaveAttribute('aria-pressed', 'true');
     for (const paneId of ['pane-base', 'pane-head']) {
       const pane = screen.getByTestId(paneId);
@@ -39,6 +40,9 @@ describe('findings panel', () => {
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(card).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByTestId('pane-base').querySelector('[data-node-id$="aws_iam_role.gha"]')).not.toHaveClass('dimmed');
+    // and clicking re-focuses it
+    fireEvent.click(card);
+    expect(card).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('shows the semantic capability delta with the wildcard called out', () => {

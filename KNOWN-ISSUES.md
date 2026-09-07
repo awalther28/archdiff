@@ -2,23 +2,22 @@
 
 Ordered by how much they matter.
 
-## 1. Module membership is unspecified, so Merkle pruning falls back
+## ~~1. Module membership is unspecified, so Merkle pruning falls back~~ — FIXED
 
-`SCHEMA.md` §5 defines module digests over "child node digests, child edge
-digests, child module digests" but never says **which module a node or edge
-belongs to**. The extractor and the differ chose differently: the extractor
-emits a module tree whose second level is a per-plan label (`mgmt`, `prod`),
-while the differ derives membership from the `module.<name>.` prefix of a
-Terraform address, and a plan label is not an address.
+`SCHEMA.md` §6.2 now makes membership **declared**: every node and edge carries a
+`module` path, so no consumer has to derive it. Two rules could not be recovered
+from a Terraform address and caused the mismatch:
 
-Consequence: `archdiff-differ` cannot verify the rollups, so it refuses to prune and
-falls back to full O(V+E) comparison, emitting a warning. **Results are
-correct** — the fallback is the safe direction, and it is loud rather than
-silent — but the Merkle optimisation is inactive on real graphs and the warning
-is noise a reviewer should not see.
+- a multi-root graph inserts a per-root layer (`root/mgmt`) that is not part of
+  any address, and synthetic nodes belong to no root at all;
+- an edge was assigned to the module of the Terraform resource that *produced*
+  it — for an attachment, a resource that is not a node — which a consumer
+  cannot identify. Edges now live with the node that **owns** them, which is
+  derivable from the edge id alone.
 
-Fix: specify module membership in the schema and make both sides derive it the
-same way.
+Merkle pruning verifies and runs on real graphs: the refactor PR reports
+`5 of 5 modules skipped by Merkle rollup (verified)`, 0 nodes compared, and
+identical root digests on both sides.
 
 ## 2. Scope confidence is `low` on the demo repo
 
@@ -61,6 +60,6 @@ design exists to prevent.
 Likely fix: an explicit deployment discriminator in `scope`, declared rather
 than inferred, absent for the common single-deployment-per-account case.
 
-## 6. Package naming is inconsistent
+## ~~6. Package naming is inconsistent~~ — FIXED
 
-The extractor is `archdiff_extractor`; the differ is `permdiff`. RESOLVED: both are now archdiff_*.
+Both packages are now `archdiff_*`; the CLI reads `archdiff-diff`. RESOLVED: both are now archdiff_*.

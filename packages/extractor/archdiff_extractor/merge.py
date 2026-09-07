@@ -255,13 +255,28 @@ class Merger:
             for node_id, node in self.nodes.items():
                 if self.node_plan[node_id] == i and node_id not in self.synthetic_ids:
                     tree.at(node.module_path).nodes.append(by_node_id[node_id]["digest"])
+                    by_node_id[node_id]["module"] = _full_module_path(label, node.module_path)
             for doc, plan_index, module_path in edges:
                 if plan_index == i:
-                    tree.at(module_path).edges.append(doc["digest"])
+                    # An edge lives with the node that OWNS it (the node whose id
+                    # prefixes the edge id), not with the Terraform resource that
+                    # produced it. The producing resource -- an attachment, say --
+                    # need not be a node at all, so consumers cannot recover it,
+                    # and a rule they cannot reproduce is a rule that breaks
+                    # Merkle verification. Owner-based membership is derivable
+                    # from the edge id alone.
+                    owner_id = doc["id"].partition("#")[0]
+                    owner = self.nodes.get(owner_id) or self.nodes.get(doc.get("source"))
+                    path = owner.module_path if owner is not None else module_path
+                    tree.at(path).edges.append(doc["digest"])
+                    doc["module"] = _full_module_path(label, path)
             plan_trees.append(tree.to_doc())
         plan_trees.sort(key=lambda m: m["path"])
         # Synthetic nodes (external / wildcard / unresolved) are owned by no
         # plan: they hang off the top-level root, independent of plan order.
+        for n in self.synthetic_ids:
+            # Synthetic nodes belong to no root, so they hang off the tree root.
+            by_node_id[n]["module"] = "root"
         synthetic = [by_node_id[n]["digest"] for n in self.synthetic_ids]
         root_digest = module_digest(synthetic, [], [m["digest"] for m in plan_trees])
         return [{"path": "root", "digest": root_digest, "children": plan_trees}]
@@ -358,3 +373,19 @@ def external_base(pattern: str) -> str:
 
 def merge(extracts: List[PlanExtract]) -> Dict[str, Any]:
     return Merger(extracts).run()
+
+
+def _full_module_path(label: str, module_path: str) -> str:
+    """Full path of the owning module in the tree, e.g. root/prod/module.workload.
+
+    SCHEMA.md 6.2: membership is declared rather than derived, because the
+    per-root layer is not part of any Terraform address and cannot be recovered
+    from one.
+    """
+    from .plan import _split_dotted
+    parts = ["root", label]
+    if module_path:
+        segs = _split_dotted(module_path)
+        for j in range(0, len(segs), 2):
+            parts.append(".".join(segs[j:j + 2]))
+    return "/".join(parts)

@@ -258,6 +258,25 @@ Semantics:
 Without this, a refactor that moves resources between modules produces a large
 added/removed churn — the exact false positive §8 exists to prevent.
 
+### 6.2 Module membership is declared, not derived
+
+Every node and edge carries `module`: the full path of its owning module in the
+`modules` tree.
+
+```json
+"module": "root/prod/module.workload"
+```
+
+The tree alone is not enough to reconstruct membership. A multi-root graph
+inserts a per-root layer (`root/mgmt`, `root/prod`) that is **not** part of any
+Terraform address, and synthetic nodes (`external`, `wildcard`) belong to no root
+at all. A consumer deriving membership from `logical_address` cannot recover
+either rule, so its recomputed rollups disagree with the document's and Merkle
+pruning is correctly but needlessly refused.
+
+`module` is NOT part of any digest — it names where a digest is rolled up, and
+including it would make the digest depend on its own location.
+
 ## 7. Diff document
 
 ```json

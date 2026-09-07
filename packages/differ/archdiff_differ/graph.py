@@ -85,13 +85,20 @@ class Graph:
         self.merkle_reason = ""
         dup: List[str] = []
 
-        def build(m: dict) -> ModuleNode:
-            node = ModuleNode(m["path"], m["digest"], module_key_of_path(m["path"]))
+        def build(m: dict, parent_key: ModuleKey = ()) -> ModuleNode:
+            # A tree entry's `path` may be just its own segment ("module.b") or
+            # already qualified ("module.a.module.b"), depending on the producer.
+            # Compose on the KEY rather than the string: if the child's own key
+            # already extends the parent's, it was qualified; otherwise append.
+            own = module_key_of_path(m["path"])
+            key = own if own[:len(parent_key)] == parent_key and len(own) > len(parent_key) \
+                else parent_key + own
+            node = ModuleNode(m["path"], m["digest"], key)
             if node.key in self.modules:
                 dup.append(m["path"])
             self.modules[node.key] = node
             for c in m.get("children", []) or []:
-                child = build(c)
+                child = build(c, node.key)
                 node.children.append(child)
                 node.subtree_size += child.subtree_size
             return node
@@ -125,6 +132,10 @@ class Graph:
     # --- module membership ----------------------------------------------
     def module_key_of_node(self, nid: str) -> ModuleKey:
         node = self.nodes[nid]
+        declared = node.get("module")
+        if declared:
+            key = module_key_of_path(declared)
+            return key if key in self.modules else UNASSIGNED_KEY
         key = module_key_of_address(node["logical_address"])
         return key if key in self.modules else UNASSIGNED_KEY
 
@@ -133,6 +144,10 @@ class Graph:
         it.  Edge ids in the fixtures are ``{node_id}#{qualifier}``, so that node
         is tried first; otherwise the source node; otherwise unassigned."""
         edge = self.edges[eid]
+        declared = edge.get("module")
+        if declared:
+            key = module_key_of_path(declared)
+            return key if key in self.modules else UNASSIGNED_KEY
         owner = eid.split("#", 1)[0]
         if owner in self.nodes:
             return self.module_key_of_node(owner)

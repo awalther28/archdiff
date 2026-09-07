@@ -218,6 +218,10 @@
         },
         "digest": {
           "$ref": "#/$defs/digest"
+        },
+        "module": {
+          "type": "string",
+          "description": "Full path of the owning module in the `modules` tree, e.g. \"root/prod/module.workload\". Authoritative when present: consumers MUST use it rather than deriving membership from the address."
         }
       }
     },
@@ -296,6 +300,10 @@
         },
         "digest": {
           "$ref": "#/$defs/digest"
+        },
+        "module": {
+          "type": "string",
+          "description": "Full path of the owning module in the `modules` tree, e.g. \"root/prod/module.workload\". Authoritative when present: consumers MUST use it rather than deriving membership from the address."
         }
       }
     },

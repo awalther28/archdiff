@@ -1,0 +1,114 @@
+name: archdiff
+description: Diff the IAM permission graph between two refs and report what a PR actually changes.
+
+inputs:
+  base-ref:
+    description: Git ref to compare against (the PR base).
+    required: false
+    default: ''
+  config:
+    description: Path to the archdiff config declaring roots and their plan vars.
+    required: false
+    default: .archdiff.json
+  mode:
+    description: '"diff" compares two refs; "baseline" emits the graph for the current ref only.'
+    required: false
+    default: diff
+  out-dir:
+    description: Where to write graphs and the diff.
+    required: false
+    default: .archdiff-out
+
+outputs:
+  diff-path:
+    description: Path to the diff JSON.
+    value: ${{ steps.run.outputs.diff-path }}
+  graph-path:
+    description: Path to the head graph JSON.
+    value: ${{ steps.run.outputs.graph-path }}
+  markdown-path:
+    description: Path to the rendered markdown for a PR comment.
+    value: ${{ steps.run.outputs.markdown-path }}
+  empty:
+    description: '"true" when the PR changes no permissions.'
+    value: ${{ steps.run.outputs.empty }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up OpenTofu
+      uses: opentofu/setup-opentofu@v1
+      with:
+        tofu_wrapper: false
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install archdiff
+      shell: bash
+      run: |
+        set -euo pipefail
+        ROOT="${{ github.action_path }}/../../.."
+        python -m pip install --quiet -e "$ROOT/packages/extractor" -e "$ROOT/packages/differ"
+
+    - name: Extract and diff
+      id: run
+      shell: bash
+      env:
+        # A plan is a pure function of configuration here: no state, no account,
+        # no AWS API calls. These credentials are deliberately fake.
+        AWS_ACCESS_KEY_ID: fake
+        AWS_SECRET_ACCESS_KEY: fake
+        AWS_REGION: us-east-1
+        AWS_EC2_METADATA_DISABLED: 'true'
+        ACTION_PATH: ${{ github.action_path }}
+        CONFIG: ${{ inputs.config }}
+        OUT: ${{ inputs.out-dir }}
+        MODE: ${{ inputs.mode }}
+        BASE_REF: ${{ inputs.base-ref }}
+      run: |
+        set -euo pipefail
+        mkdir -p "$OUT"
+
+        plan_and_extract() {
+          local src="$1" out="$2"
+          local args=() label dir varargs
+          while IFS=$'\t' read -r label dir varargs; do
+            [ -z "$label" ] && continue
+            (
+              cd "$src/$dir"
+              tofu init -input=false -no-color >/dev/null
+              # shellcheck disable=SC2086
+              tofu plan -refresh=false -input=false -no-color $varargs -out=tfplan >/dev/null
+              tofu show -json tfplan > "$RUNNER_TEMP/$label.plan.json"
+            )
+            args+=( --plan "$RUNNER_TEMP/$label.plan.json" --root "$label" --src "$src/$dir" )
+          done < <(python "$ACTION_PATH/roots.py" "$src/$CONFIG")
+          python -m archdiff_extractor "${args[@]}" --out "$out"
+        }
+
+        plan_and_extract "$GITHUB_WORKSPACE" "$OUT/head.graph.json"
+        echo "graph-path=$OUT/head.graph.json" >> "$GITHUB_OUTPUT"
+
+        if [ "$MODE" != "diff" ]; then
+          exit 0
+        fi
+
+        # The base ref gets its own worktree so BOTH sides are extracted by the
+        # same tool version in the same run. Version skew between the two sides
+        # would surface as code change that isn't there.
+        BASE_DIR="$RUNNER_TEMP/base"
+        git worktree add --detach "$BASE_DIR" "origin/$BASE_REF"
+        plan_and_extract "$BASE_DIR" "$OUT/base.graph.json"
+
+        python -m archdiff_differ diff --base "$OUT/base.graph.json" \
+                                       --head "$OUT/head.graph.json" --out "$OUT/diff.json"
+        python -m archdiff_differ render --diff "$OUT/diff.json" --out "$OUT/comment.md"
+
+        {
+          echo "diff-path=$OUT/diff.json"
+          echo "markdown-path=$OUT/comment.md"
+          echo "empty=$(python "$ACTION_PATH/isempty.py" "$OUT/diff.json")"
+        } >> "$GITHUB_OUTPUT"

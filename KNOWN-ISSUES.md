@@ -1,35 +1,45 @@
 # Known issues
 
-Ordered by how much they matter.
+Ordered by how much they matter. Everything here is reproducible against the
+live demo: https://awalther28.github.io/archdiff-demo/
 
-## ~~1. Module membership is unspecified, so Merkle pruning falls back~~ — FIXED
+## 1. Viewer flags a false "Inconsistent" on the no-op PR
 
-`SCHEMA.md` §6.2 now makes membership **declared**: every node and edge carries a
-`module` path, so no consumer has to derive it. Two rules could not be recovered
-from a Terraform address and caused the mismatch:
+Open https://awalther28.github.io/archdiff-demo/#/pr/3 and the page says
+**No permission changes** — then contradicts itself with a red banner:
 
-- a multi-root graph inserts a per-root layer (`root/mgmt`) that is not part of
-  any address, and synthetic nodes belong to no root at all;
-- an edge was assigned to the module of the Terraform resource that *produced*
-  it — for an attachment, a resource that is not a node — which a consumer
-  cannot identify. Edges now live with the node that **owns** them, which is
-  derivable from the edge id alone.
+> The diff document says nothing changed, but the viewer found differing
+> digests between the two graphs.
 
-Merkle pruning verifies and runs on real graphs: the refactor PR reports
-`5 of 5 modules skipped by Merkle rollup (verified)`, 0 nodes compared, and
-identical root digests on both sides.
+The diff is right and the viewer's check is wrong. The differ applies the head
+graph's `moves` to the base graph *before* comparing (§6.1) — that is how a
+module refactor comes out empty. The viewer fetches the raw base and head
+graphs and recomputes root digests directly, knows nothing about `moves`, and
+so correctly observes that they differ and concludes the differ is lying. It
+reports `20 of 24 · digests identical` — the four moved nodes.
 
-## 2. Scope confidence is `low` on the demo repo
+The self-check itself is good and worth keeping: it is the viewer refusing to
+take the differ's word for its most important claim. It just needs teaching
+about `moves_applied` — either apply the same remapping before hashing, or
+treat the check as satisfied when moves were applied and say so.
 
-The extractor derives account identity from `var.account_id` by name, which
-`SCHEMA.md` §1 classes as `variable_heuristic`/low confidence. §1.1 defines a
-better rule the extractor does not yet implement: read the `validation {}` block
-from HCL (the demo repo already has one constraining the value to 12 digits) and
-corroborate against literal ARNs the config emits, which earns `high` honestly
-rather than by name-matching.
+This lands on the single most important scenario, so it is first.
 
-The HCL reader already exists for `moved {}` blocks, so the marginal cost is
-small. Until then the viewer shows a low-confidence warning on every scope.
+## 2. Scope confidence is `low` on the demo
+
+The same page shows two `LOW-CONFIDENCE SCOPE` warnings: "Scope resolved by
+variable heuristic; nodes may belong to a different account than shown."
+
+`.archdiff.json` declares both scopes explicitly, and `SCHEMA.md` §1 ranks
+`explicit` highest — but the extractor only accepts explicit scopes via
+`--scope-overrides`, and the CI action does not pass it. So the config file is
+doing half its job: declaring roots and plan variables, but not scope.
+
+§1.1 also defines a better automatic rule the extractor does not yet implement:
+read the `validation {}` block from HCL (the demo repo already constrains
+`account_id` to 12 digits) and corroborate against literal ARNs the config
+emits. The HCL reader already exists for `moved {}` blocks, so the marginal
+cost is small.
 
 ## 3. The viewer's third scenario is synthetic
 
@@ -60,6 +70,8 @@ design exists to prevent.
 Likely fix: an explicit deployment discriminator in `scope`, declared rather
 than inferred, absent for the common single-deployment-per-account case.
 
-## ~~6. Package naming is inconsistent~~ — FIXED
+---
 
-Both packages are now `archdiff_*`; the CLI reads `archdiff-diff`. RESOLVED: both are now archdiff_*.
+Resolved earlier in development (see git history): module membership was
+unspecified so Merkle pruning always fell back (fixed by SCHEMA.md 6.2), and
+the two packages disagreed on naming (both are now `archdiff_*`).

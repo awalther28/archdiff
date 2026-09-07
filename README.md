@@ -60,7 +60,24 @@ Merging several plans into one graph is what makes cross-root privilege paths
 visible: a path that crosses account boundaries is invisible to each individual
 `tofu plan`.
 
+## The live demo
+
+Three pull requests in
+[archdiff-demo](https://github.com/awalther28/archdiff-demo/pulls), each
+analysed in CI by this repo's composite action, each commenting with a verdict
+and a link to the rendered diff:
+
+| PR | change | what archdiff says |
+|---|---|---|
+| [#1](https://github.com/awalther28/archdiff-demo/pull/1) | one line: `s3:GetObject` -> `s3:*` | **HIGH** — [prod-app widened to `s3:*`](https://awalther28.github.io/archdiff-demo/#/pr/1) |
+| [#2](https://github.com/awalther28/archdiff-demo/pull/2) | one line added to a trust policy | **CRITICAL** — [a 2-hop cross-account path to admin](https://awalther28.github.io/archdiff-demo/#/pr/2) |
+| [#3](https://github.com/awalther28/archdiff-demo/pull/3) | 19-file refactor, resources moved between modules | **[No permission changes](https://awalther28.github.io/archdiff-demo/#/pr/3)** |
+
+PR #2's diff mentions no privileged action, no admin role and no account
+number. PR #3 is the one that matters most: if a large refactor did not come
+back empty, nothing else the tool says would be worth reading.
+
 ## Status
 
-Working end to end against the demo repository. Known gaps are tracked in
-`KNOWN-ISSUES.md`.
+Working end to end in CI against the demo repository. Known gaps, all
+reproducible against the live demo, are tracked in `KNOWN-ISSUES.md`.

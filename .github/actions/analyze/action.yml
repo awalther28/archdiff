@@ -18,6 +18,14 @@ inputs:
     description: Where to write graphs and the diff.
     required: false
     default: .archdiff-out
+  viewer:
+    description: Build the static viewer as well ("true"/"false").
+    required: false
+    default: 'false'
+  viewer-base:
+    description: Base path the viewer will be served from, e.g. /archdiff-demo/.
+    required: false
+    default: /
 
 outputs:
   diff-path:
@@ -32,6 +40,15 @@ outputs:
   empty:
     description: '"true" when the PR changes no permissions.'
     value: ${{ steps.run.outputs.empty }}
+  verdict:
+    description: One-line human verdict, suitable for a PR comment.
+    value: ${{ steps.run.outputs.verdict }}
+  severity:
+    description: Highest finding severity, or NONE.
+    value: ${{ steps.run.outputs.severity }}
+  viewer-dist:
+    description: Path to the built viewer, when viewer=true.
+    value: ${{ steps.viewer.outputs.dist }}
 
 runs:
   using: composite
@@ -45,6 +62,12 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+
+    - name: Set up Node
+      if: inputs.viewer == 'true'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
 
     - name: Install archdiff
       shell: bash
@@ -111,4 +134,18 @@ runs:
           echo "diff-path=$OUT/diff.json"
           echo "markdown-path=$OUT/comment.md"
           echo "empty=$(python "$ACTION_PATH/isempty.py" "$OUT/diff.json")"
+          python "$ACTION_PATH/verdict.py" "$OUT/diff.json"
         } >> "$GITHUB_OUTPUT"
+
+    - name: Build the viewer
+      id: viewer
+      if: inputs.viewer == 'true'
+      shell: bash
+      env:
+        BASE_PATH: ${{ inputs.viewer-base }}
+      run: |
+        set -euo pipefail
+        VIEWER="${{ github.action_path }}/../../../viewer"
+        npm --prefix "$VIEWER" ci --silent
+        npm --prefix "$VIEWER" run build
+        echo "dist=$(cd "$VIEWER/dist" && pwd)" >> "$GITHUB_OUTPUT"

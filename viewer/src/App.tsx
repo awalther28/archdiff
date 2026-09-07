@@ -2,19 +2,60 @@ import { useEffect, useState } from 'react';
 import { Navigate, NavLink, Route, Routes, useParams } from 'react-router-dom';
 import { loadManifest } from './lib/load';
 import { applyTheme, nextTheme, readTheme, type Theme } from './lib/theme';
-import type { Manifest } from './schema/types';
+import type { Manifest, Scenario } from './schema/types';
 import { DiffPage } from './components/DiffPage';
 
 export function App() {
+  const [theme, setTheme] = useState<Theme>(() => readTheme());
+  useEffect(() => applyTheme(theme), [theme]);
+  const onTheme = () => setTheme(nextTheme(theme));
+
+  // /pr/:num is what a pull-request comment links to. It deliberately does NOT
+  // depend on the demo manifest: a PR's data is published on its own, and a
+  // missing or stale scenarios.json must never break a live PR link.
+  return (
+    <Routes>
+      <Route path="/pr/:num" element={<PrShell theme={theme} onTheme={onTheme} />} />
+      <Route path="*" element={<ScenarioApp theme={theme} onTheme={onTheme} />} />
+    </Routes>
+  );
+}
+
+function PrShell({ theme, onTheme }: { theme: Theme; onTheme: () => void }) {
+  const { num } = useParams();
+  const scenario: Scenario = {
+    id: `pr-${num}`,
+    label: `PR #${num}`,
+    summary: `Permission diff for pull request #${num}`,
+    base: `pr/${num}/base.graph.json`,
+    head: `pr/${num}/head.graph.json`,
+    diff: `pr/${num}/diff.json`,
+  };
+  return (
+    <div className="app">
+      <header className="topbar">
+        <div className="brand">
+          <span className="name">Permission Graph</span>
+          <span className="ver">PR #{num}</span>
+        </div>
+        <div className="spacer" />
+        <div id="topbar-slot" style={{ display: 'contents' }} />
+        <button className="iconbtn" onClick={onTheme} title={`Theme: ${theme} (click to change)`} aria-label={`Theme: ${theme}`}>
+          {theme === 'dark' ? <MoonIcon /> : theme === 'light' ? <SunIcon /> : <AutoIcon />}
+        </button>
+      </header>
+      <DiffPage key={scenario.id} scenario={scenario} />
+    </div>
+  );
+}
+
+function ScenarioApp({ theme, onTheme }: { theme: Theme; onTheme: () => void }) {
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [theme, setTheme] = useState<Theme>(() => readTheme());
 
   useEffect(() => {
     loadManifest().then(setManifest).catch((e: Error) => setError(e.message));
   }, []);
-
-  useEffect(() => applyTheme(theme), [theme]);
 
   if (error) {
     return (
@@ -31,7 +72,7 @@ export function App() {
     <Routes>
       <Route
         path="/s/:id"
-        element={<Shell manifest={manifest} theme={theme} onTheme={() => setTheme(nextTheme(theme))} />}
+        element={<Shell manifest={manifest} theme={theme} onTheme={onTheme} />}
       />
       <Route path="*" element={first ? <Navigate to={`/s/${first.id}`} replace /> : <div className="state">No scenarios in manifest</div>} />
     </Routes>

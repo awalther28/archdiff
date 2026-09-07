@@ -17,7 +17,7 @@ describe('findings panel', () => {
     expect(cards[0]).toHaveTextContent('01');
     expect(cards[0]).toHaveTextContent('high');
     expect(cards[0]).toHaveTextContent('New wildcard capability');
-    expect(cards[0]).toHaveTextContent('ci role gained s3:* on all resources');
+    expect(cards[0]).toHaveTextContent('app-admin role gained s3:* on all resources');
     expect(cards[0]).toHaveTextContent(/widened from/);
     expect(cards[1]).toHaveTextContent('Second finding');
   });

@@ -1,0 +1,94 @@
+{
+  "base": {
+    "graph_digest": "2cc8862700014f6a",
+    "ref": "main"
+  },
+  "findings": [
+    {
+      "detail": "aws_iam_policy.app_data statement ReadData widened from [s3:GetObject, s3:ListBucket] on one bucket to s3:* on *.",
+      "kind": "wildcard_capability_added",
+      "node_ids": [
+        "aws:111122223333:us-east-1/aws_iam_policy.app_data"
+      ],
+      "rank": 1,
+      "severity": "high",
+      "title": "app-admin role gained s3:* on all resources"
+    }
+  ],
+  "head": {
+    "graph_digest": "d32c84693cbcde6c",
+    "ref": "pr-1-star-policy"
+  },
+  "schema_version": "1.0",
+  "semantic": {
+    "capabilities": {
+      "added": [
+        {
+          "actions": [
+            "s3:*"
+          ],
+          "confidence": "confirmed",
+          "principal": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+          "resource_patterns": [
+            "*"
+          ]
+        }
+      ],
+      "removed": [
+        {
+          "actions": [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ],
+          "confidence": "confirmed",
+          "principal": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+          "resource_patterns": [
+            "arn:aws:s3:::app-data/*"
+          ]
+        }
+      ]
+    },
+    "paths": {
+      "added": [],
+      "removed": []
+    }
+  },
+  "stats": {
+    "modules_skipped": 0,
+    "nodes_compared": 10
+  },
+  "structural": {
+    "edges": {
+      "added": [],
+      "changed": [
+        {
+          "after_digest": "82f846c4b73fd2c1",
+          "before_digest": "ef93d73cfae73d92",
+          "id": "aws:111122223333:us-east-1/aws_iam_policy.app_data#stmt:ReadData"
+        }
+      ],
+      "removed": []
+    },
+    "nodes": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    }
+  },
+  "unevaluated": [
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:audit",
+      "note": "Third-party trust guarded by a Condition; not evaluated.",
+      "reasons": [
+        "condition"
+      ]
+    },
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_policy.kms_use#stmt:unresolved",
+      "note": "Policy body references aws_kms_key.main.arn, unknown at plan time.",
+      "reasons": [
+        "unresolved_policy_body"
+      ]
+    }
+  ]
+}

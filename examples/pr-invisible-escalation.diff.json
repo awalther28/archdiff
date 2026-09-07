@@ -1,0 +1,219 @@
+{
+  "base": {
+    "graph_digest": "4363517f69eddb93",
+    "ref": "base"
+  },
+  "empty": false,
+  "findings": [
+    {
+      "confidence": "confirmed",
+      "crosses_scopes": true,
+      "detail": "New privilege path gha -> mgmt-deploy -> prod-app-admin spanning scopes aws:111122223333:us-east-1, aws:999988887777:us-east-1; no single plan sees this path. Terminal capabilities: [iam:*, kms:*, s3:*].",
+      "edge_ids": [
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:aws_iam_role.gha"
+      ],
+      "hops": 2,
+      "kind": "path_added",
+      "node_ids": [
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy"
+      ],
+      "path": [
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin"
+      ],
+      "rank": 1,
+      "severity": "critical",
+      "title": "gha can now reach prod-app-admin (2 hops, cross-scope)"
+    },
+    {
+      "confidence": "confirmed",
+      "crosses_scopes": true,
+      "detail": "New privilege path gha -> mgmt-deploy -> prod-deployer spanning scopes aws:111122223333:us-east-1, aws:999988887777:us-east-1; no single plan sees this path. Terminal capabilities: [iam:PassRole, lambda:GetFunction, lambda:UpdateFunctionCode, lambda:UpdateFunctionConfiguration].",
+      "edge_ids": [
+        "aws:111122223333:us-east-1/aws_iam_role.deployer#trust:aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:aws_iam_role.gha"
+      ],
+      "hops": 2,
+      "kind": "path_added",
+      "node_ids": [
+        "aws:111122223333:us-east-1/aws_iam_role.deployer",
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy"
+      ],
+      "path": [
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+        "aws:111122223333:us-east-1/aws_iam_role.deployer"
+      ],
+      "rank": 2,
+      "severity": "critical",
+      "title": "gha can now reach prod-deployer (2 hops, cross-scope)"
+    },
+    {
+      "confidence": "confirmed",
+      "crosses_scopes": false,
+      "detail": "New privilege path gha -> mgmt-deploy. Terminal capabilities: [s3:GetObject, s3:PutObject, sts:AssumeRole].",
+      "edge_ids": [
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:aws_iam_role.gha"
+      ],
+      "hops": 1,
+      "kind": "path_added",
+      "node_ids": [
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy"
+      ],
+      "path": [
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy"
+      ],
+      "rank": 3,
+      "severity": "high",
+      "title": "gha can now reach mgmt-deploy (1 hop)"
+    }
+  ],
+  "head": {
+    "graph_digest": "91ae49a39560942a",
+    "ref": "head"
+  },
+  "moves_applied": [],
+  "schema_version": "1.0",
+  "semantic": {
+    "capabilities": {
+      "added": [],
+      "removed": []
+    },
+    "paths": {
+      "added": [
+        {
+          "confidence": "confirmed",
+          "crosses_scopes": false,
+          "edge_ids": [
+            "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:aws_iam_role.gha"
+          ],
+          "hops": 1,
+          "path": [
+            "aws:999988887777:us-east-1/aws_iam_role.gha",
+            "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy"
+          ],
+          "terminal_capabilities": [
+            "s3:GetObject",
+            "s3:PutObject",
+            "sts:AssumeRole"
+          ]
+        },
+        {
+          "confidence": "confirmed",
+          "crosses_scopes": true,
+          "edge_ids": [
+            "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+            "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:aws_iam_role.gha"
+          ],
+          "hops": 2,
+          "path": [
+            "aws:999988887777:us-east-1/aws_iam_role.gha",
+            "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+            "aws:111122223333:us-east-1/aws_iam_role.app_admin"
+          ],
+          "terminal_capabilities": [
+            "iam:*",
+            "kms:*",
+            "s3:*"
+          ]
+        },
+        {
+          "confidence": "confirmed",
+          "crosses_scopes": true,
+          "edge_ids": [
+            "aws:111122223333:us-east-1/aws_iam_role.deployer#trust:aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+            "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:aws_iam_role.gha"
+          ],
+          "hops": 2,
+          "path": [
+            "aws:999988887777:us-east-1/aws_iam_role.gha",
+            "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+            "aws:111122223333:us-east-1/aws_iam_role.deployer"
+          ],
+          "terminal_capabilities": [
+            "iam:PassRole",
+            "lambda:GetFunction",
+            "lambda:UpdateFunctionCode",
+            "lambda:UpdateFunctionConfiguration"
+          ]
+        }
+      ],
+      "removed": []
+    }
+  },
+  "stats": {
+    "edges_compared": 29,
+    "merkle": {
+      "enabled": false,
+      "fallback_reason": "merkle verification failed: base module 'mgmt': recomputed digest d38f6d8be39f3fbc != document digest 0d8768654669420a",
+      "prune_points": 0,
+      "verified": false
+    },
+    "modules_compared": 4,
+    "modules_skipped": 0,
+    "modules_total": 4,
+    "nodes_compared": 20,
+    "semantic": {
+      "max_hops": 4,
+      "mode": "incremental",
+      "paths_enumerated": 6,
+      "principals_evaluated": 0
+    },
+    "unevaluated_edges_in_head": 3
+  },
+  "structural": {
+    "edges": {
+      "added": [
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:aws_iam_role.gha"
+      ],
+      "changed": [],
+      "removed": []
+    },
+    "nodes": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    }
+  },
+  "tool": {
+    "catalog": "bundled-2026-09",
+    "catalog_services": "iam, kms, s3, secretsmanager, sts",
+    "limits": "wildcard expansion covers only the bundled catalog (bundled-2026-09: s3, sts, iam, kms, secretsmanager); privilege paths bounded to 4 hops",
+    "name": "permdiff",
+    "version": "0.1.0"
+  },
+  "unevaluated": [
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:external.arn:aws:iam::555566667777:role/third-party-audit",
+      "edge_type": "can_assume",
+      "note": "Statement carries a Condition block; its effect was not evaluated.",
+      "reasons": [
+        "condition"
+      ],
+      "relevance": "affects prod-app-admin",
+      "source": "aws:111122223333:us-east-1/external.arn:aws:iam::555566667777:role/third-party-audit",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.app_admin"
+    },
+    {
+      "edge_id": "aws:999988887777:us-east-1/aws_iam_role.gha#trust:aws_iam_openid_connect_provider.github",
+      "edge_type": "trusted_by",
+      "note": "Statement carries a Condition block; its effect was not evaluated.",
+      "reasons": [
+        "condition"
+      ],
+      "relevance": "affects gha",
+      "source": "aws:999988887777:us-east-1/aws_iam_role.gha",
+      "target": "aws:999988887777:us-east-1/aws_iam_openid_connect_provider.github"
+    }
+  ],
+  "warnings": [
+    "merkle prune not used: merkle verification failed: base module 'mgmt': recomputed digest d38f6d8be39f3fbc != document digest 0d8768654669420a"
+  ]
+}

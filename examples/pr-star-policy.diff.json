@@ -1,0 +1,193 @@
+{
+  "base": {
+    "graph_digest": "4363517f69eddb93",
+    "ref": "base"
+  },
+  "empty": false,
+  "findings": [
+    {
+      "actions": [
+        "s3:*"
+      ],
+      "confidence": "confirmed",
+      "detail": "module.app.aws_iam_policy.data_read statement ReadAppData widened from [s3:GetObject] on arn:aws:s3:::acme-prod-app-data/* to [s3:*] on arn:aws:s3:::acme-prod-app-data/*. Wildcard expands to 129 catalogued actions.",
+      "edge_ids": [
+        "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read#stmt:ReadAppData",
+        "aws:111122223333:us-east-1/module.app.aws_iam_role.this#attach:module.app.aws_iam_policy.data_read"
+      ],
+      "kind": "wildcard_capability_added",
+      "new_actions_count": 127,
+      "new_actions_sample": [
+        "s3:AbortMultipartUpload",
+        "s3:BypassGovernanceRetention",
+        "s3:CreateAccessPoint",
+        "s3:CreateAccessPointForObjectLambda",
+        "s3:CreateBucket",
+        "s3:CreateJob",
+        "s3:CreateMultiRegionAccessPoint",
+        "s3:DeleteAccessPoint",
+        "s3:DeleteAccessPointForObjectLambda",
+        "s3:DeleteAccessPointPolicy",
+        "s3:DeleteAccessPointPolicyForObjectLambda",
+        "s3:DeleteBucket",
+        "s3:DeleteBucketOwnershipControls",
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteJobTagging",
+        "s3:DeleteMultiRegionAccessPoint",
+        "s3:DeleteObject",
+        "s3:DeleteObjectTagging",
+        "s3:DeleteObjectVersion"
+      ],
+      "node_ids": [
+        "aws:111122223333:us-east-1/aws_s3_bucket.data",
+        "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read",
+        "aws:111122223333:us-east-1/module.app.aws_iam_role.this"
+      ],
+      "principals": [
+        "aws:111122223333:us-east-1/module.app.aws_iam_role.this"
+      ],
+      "rank": 1,
+      "resource_patterns": [
+        "arn:aws:s3:::acme-prod-app-data/*"
+      ],
+      "severity": "high",
+      "title": "prod-app widened to [s3:*] on arn:aws:s3:::acme-prod-app-data/*",
+      "wildcard": true
+    }
+  ],
+  "head": {
+    "graph_digest": "ccb18963dab33ffb",
+    "ref": "head"
+  },
+  "moves_applied": [],
+  "schema_version": "1.0",
+  "semantic": {
+    "capabilities": {
+      "added": [
+        {
+          "actions": [
+            "s3:*"
+          ],
+          "confidence": "confirmed",
+          "edge_ids": [
+            "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read#stmt:ReadAppData",
+            "aws:111122223333:us-east-1/module.app.aws_iam_role.this#attach:module.app.aws_iam_policy.data_read"
+          ],
+          "expanded_action_count": 129,
+          "gained_action_count": 127,
+          "principal": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+          "resource_patterns": [
+            "arn:aws:s3:::acme-prod-app-data/*"
+          ],
+          "targets": [
+            "aws:111122223333:us-east-1/aws_s3_bucket.data"
+          ],
+          "via_policies": [
+            "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read"
+          ],
+          "wildcard": true
+        }
+      ],
+      "removed": [
+        {
+          "actions": [
+            "s3:GetObject"
+          ],
+          "confidence": "confirmed",
+          "edge_ids": [
+            "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read#stmt:ReadAppData",
+            "aws:111122223333:us-east-1/module.app.aws_iam_role.this#attach:module.app.aws_iam_policy.data_read"
+          ],
+          "expanded_action_count": 1,
+          "lost_actions": [],
+          "principal": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+          "resource_patterns": [
+            "arn:aws:s3:::acme-prod-app-data/*"
+          ],
+          "superseded_by": {
+            "actions": [
+              "s3:*"
+            ],
+            "confidence": "confirmed",
+            "resource_patterns": [
+              "arn:aws:s3:::acme-prod-app-data/*"
+            ]
+          },
+          "targets": [
+            "aws:111122223333:us-east-1/aws_s3_bucket.data"
+          ],
+          "via_policies": [
+            "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read"
+          ],
+          "wildcard": false
+        }
+      ]
+    },
+    "paths": {
+      "added": [],
+      "removed": []
+    }
+  },
+  "stats": {
+    "edges_compared": 28,
+    "merkle": {
+      "enabled": false,
+      "fallback_reason": "merkle verification failed: base module 'module.app': recomputed digest 24c80872b2a80f10 != document digest 3be7d4a711c47131",
+      "prune_points": 0,
+      "verified": false
+    },
+    "modules_compared": 4,
+    "modules_skipped": 0,
+    "modules_total": 4,
+    "nodes_compared": 20,
+    "semantic": {
+      "max_hops": 4,
+      "mode": "incremental",
+      "paths_enumerated": 0,
+      "principals_evaluated": 1
+    },
+    "unevaluated_edges_in_head": 3
+  },
+  "structural": {
+    "edges": {
+      "added": [],
+      "changed": [
+        {
+          "after_digest": "7a2875761059a8e9",
+          "before_digest": "620de33b99c0069e",
+          "id": "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read#stmt:ReadAppData"
+        }
+      ],
+      "removed": []
+    },
+    "nodes": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    }
+  },
+  "tool": {
+    "catalog": "bundled-2026-09",
+    "catalog_services": "iam, kms, s3, secretsmanager, sts",
+    "limits": "wildcard expansion covers only the bundled catalog (bundled-2026-09: s3, sts, iam, kms, secretsmanager); privilege paths bounded to 4 hops",
+    "name": "permdiff",
+    "version": "0.1.0"
+  },
+  "unevaluated": [
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_policy.kms_use#stmt:UseDataKey",
+      "edge_type": "grants",
+      "note": "Policy document was unresolved at plan time; actions and resources are unknown. Target aws_kms_key.main has unresolved attributes: arn.",
+      "reasons": [
+        "unresolved_policy_body"
+      ],
+      "relevance": "affects prod-app",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.kms_use",
+      "target": "aws:111122223333:us-east-1/aws_kms_key.main"
+    }
+  ],
+  "warnings": [
+    "merkle prune not used: merkle verification failed: base module 'module.app': recomputed digest 24c80872b2a80f10 != document digest 3be7d4a711c47131"
+  ]
+}

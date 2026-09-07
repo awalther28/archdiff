@@ -1,0 +1,54 @@
+{
+  "base": {
+    "graph_digest": "2cc8862700014f6a",
+    "ref": "main"
+  },
+  "findings": [],
+  "head": {
+    "graph_digest": "2cc8862700014f6a",
+    "ref": "pr-2-module-refactor"
+  },
+  "schema_version": "1.0",
+  "semantic": {
+    "capabilities": {
+      "added": [],
+      "removed": []
+    },
+    "paths": {
+      "added": [],
+      "removed": []
+    }
+  },
+  "stats": {
+    "modules_skipped": 1,
+    "nodes_compared": 0
+  },
+  "structural": {
+    "edges": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "nodes": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    }
+  },
+  "unevaluated": [
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:audit",
+      "note": "Third-party trust guarded by a Condition; not evaluated.",
+      "reasons": [
+        "condition"
+      ]
+    },
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_policy.kms_use#stmt:unresolved",
+      "note": "Policy body references aws_kms_key.main.arn, unknown at plan time.",
+      "reasons": [
+        "unresolved_policy_body"
+      ]
+    }
+  ]
+}

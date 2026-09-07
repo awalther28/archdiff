@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "permdiff"
+version = "0.1.0"
+description = "Differ for Permission Graph v1 documents: structural (Merkle) + semantic layers"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+permdiff = "permdiff.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["permdiff*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

@@ -1,0 +1,977 @@
+{
+  "edges": [
+    {
+      "actions": [
+        "s3:*"
+      ],
+      "digest": "483668c4bde001b4",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.app_admin#stmt:FullDataAccess",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:s3:::acme-prod-app-data",
+        "arn:aws:s3:::acme-prod-app-data/*"
+      ],
+      "sid": "FullDataAccess",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.app_admin",
+      "target": "aws:111122223333:us-east-1/aws_s3_bucket.data",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "iam:*"
+      ],
+      "digest": "55c6c9e57c5c8181",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.app_admin#stmt:ManageAppRoles@aws_iam_role.app_admin",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:iam::111122223333:role/prod-*"
+      ],
+      "sid": "ManageAppRoles",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.app_admin",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "iam:*"
+      ],
+      "digest": "f08974381dc18fec",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.app_admin#stmt:ManageAppRoles@aws_iam_role.deployer",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:iam::111122223333:role/prod-*"
+      ],
+      "sid": "ManageAppRoles",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.app_admin",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.deployer",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "iam:*"
+      ],
+      "digest": "1b445bb53151d149",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.app_admin#stmt:ManageAppRoles@module.app.aws_iam_role.this",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:iam::111122223333:role/prod-*"
+      ],
+      "sid": "ManageAppRoles",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.app_admin",
+      "target": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "kms:*"
+      ],
+      "digest": "3a8677eb073b7a12",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.app_admin#stmt:ManageKeys",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "*"
+      ],
+      "sid": "ManageKeys",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.app_admin",
+      "target": "aws:111122223333:us-east-1/wildcard.all",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKey*"
+      ],
+      "digest": "6c423aca8ab7ff20",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.kms_use#stmt:UseDataKey",
+      "resolution": "unresolved_at_plan",
+      "resource_patterns": [],
+      "sid": "UseDataKey",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.kms_use",
+      "target": "aws:111122223333:us-east-1/aws_kms_key.main",
+      "type": "grants",
+      "unevaluated": [
+        "unresolved_policy_body"
+      ]
+    },
+    {
+      "actions": [
+        "s3:PutObject"
+      ],
+      "digest": "59ca40e9b988bec9",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.kms_use#stmt:WriteAppData",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:s3:::acme-prod-app-data/*"
+      ],
+      "sid": "WriteAppData",
+      "source": "aws:111122223333:us-east-1/aws_iam_policy.kms_use",
+      "target": "aws:111122223333:us-east-1/aws_s3_bucket.data",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [],
+      "digest": "ec0ac66eaea305f5",
+      "effect": null,
+      "id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#attach:aws_iam_policy.app_admin",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": null,
+      "source": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+      "target": "aws:111122223333:us-east-1/aws_iam_policy.app_admin",
+      "type": "attaches",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRole"
+      ],
+      "digest": "640f1116a4f20dc1",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": "ManagementDeploy",
+      "source": "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+      "type": "can_assume",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRole"
+      ],
+      "digest": "079da991e5ad02d1",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:external.arn:aws:iam::555566667777:role/third-party-audit",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": "ThirdPartyAudit",
+      "source": "aws:111122223333:us-east-1/external.arn:aws:iam::555566667777:role/third-party-audit",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+      "type": "can_assume",
+      "unevaluated": [
+        "condition"
+      ]
+    },
+    {
+      "actions": [],
+      "digest": "75cc05b21a92732a",
+      "effect": null,
+      "id": "aws:111122223333:us-east-1/aws_iam_role.deployer#attach:aws_iam_role_policy.deployer",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": null,
+      "source": "aws:111122223333:us-east-1/aws_iam_role.deployer",
+      "target": "aws:111122223333:us-east-1/aws_iam_role_policy.deployer",
+      "type": "attaches",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRole"
+      ],
+      "digest": "360f140bb8c9491d",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_role.deployer#trust:aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": "ManagementDeploy",
+      "source": "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.deployer",
+      "type": "can_assume",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "lambda:GetFunction",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration"
+      ],
+      "digest": "0bd194db2046fa6f",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_role_policy.deployer#stmt:DeployFunctions",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:lambda:us-east-1:111122223333:function:app-*"
+      ],
+      "sid": "DeployFunctions",
+      "source": "aws:111122223333:us-east-1/aws_iam_role_policy.deployer",
+      "target": "aws:111122223333:us-east-1/external.arn:aws:lambda:us-east-1:111122223333:function:app-*",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "iam:PassRole"
+      ],
+      "digest": "aaee3bec5343bcc2",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/aws_iam_role_policy.deployer#stmt:PassAppRole",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:iam::111122223333:role/prod-app"
+      ],
+      "sid": "PassAppRole",
+      "source": "aws:111122223333:us-east-1/aws_iam_role_policy.deployer",
+      "target": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "s3:ListBucket"
+      ],
+      "digest": "e40fd76f8e02509b",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read#stmt:ListAppData",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:s3:::acme-prod-app-data"
+      ],
+      "sid": "ListAppData",
+      "source": "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read",
+      "target": "aws:111122223333:us-east-1/aws_s3_bucket.data",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "s3:GetObject"
+      ],
+      "digest": "620de33b99c0069e",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read#stmt:ReadAppData",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:s3:::acme-prod-app-data/*"
+      ],
+      "sid": "ReadAppData",
+      "source": "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read",
+      "target": "aws:111122223333:us-east-1/aws_s3_bucket.data",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [],
+      "digest": "9bc97726159181ee",
+      "effect": null,
+      "id": "aws:111122223333:us-east-1/module.app.aws_iam_role.this#attach:aws_iam_policy.kms_use",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": null,
+      "source": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+      "target": "aws:111122223333:us-east-1/aws_iam_policy.kms_use",
+      "type": "attaches",
+      "unevaluated": []
+    },
+    {
+      "actions": [],
+      "digest": "a041f52d6a63f17b",
+      "effect": null,
+      "id": "aws:111122223333:us-east-1/module.app.aws_iam_role.this#attach:module.app.aws_iam_policy.data_read",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": null,
+      "source": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+      "target": "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read",
+      "type": "attaches",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRole"
+      ],
+      "digest": "dade03efa0966df1",
+      "effect": "Allow",
+      "id": "aws:111122223333:us-east-1/module.app.aws_iam_role.this#trust:external.lambda.amazonaws.com",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": "LambdaService",
+      "source": "aws:111122223333:us-east-1/external.lambda.amazonaws.com",
+      "target": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+      "type": "can_assume",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "s3:ListBucket"
+      ],
+      "digest": "064cc673432fc315",
+      "effect": "Allow",
+      "id": "aws:999988887777:us-east-1/aws_iam_policy.gha_artifacts#stmt:ListBuildArtifacts",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:s3:::acme-build-artifacts"
+      ],
+      "sid": "ListBuildArtifacts",
+      "source": "aws:999988887777:us-east-1/aws_iam_policy.gha_artifacts",
+      "target": "aws:999988887777:us-east-1/aws_s3_bucket.artifacts",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "s3:GetObject"
+      ],
+      "digest": "29cfc6c83c6919c5",
+      "effect": "Allow",
+      "id": "aws:999988887777:us-east-1/aws_iam_policy.gha_artifacts#stmt:ReadBuildArtifacts",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:s3:::acme-build-artifacts/*"
+      ],
+      "sid": "ReadBuildArtifacts",
+      "source": "aws:999988887777:us-east-1/aws_iam_policy.gha_artifacts",
+      "target": "aws:999988887777:us-east-1/aws_s3_bucket.artifacts",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRole"
+      ],
+      "digest": "4720dbc6b0a13075",
+      "effect": "Allow",
+      "id": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy#stmt:AssumeWorkloadRoles@aws:111122223333:us-east-1/aws_iam_role.app_admin",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:iam::111122223333:role/prod-app-admin"
+      ],
+      "sid": "AssumeWorkloadRoles",
+      "source": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRole"
+      ],
+      "digest": "4b22137ce04b0b46",
+      "effect": "Allow",
+      "id": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy#stmt:AssumeWorkloadRoles@aws:111122223333:us-east-1/aws_iam_role.deployer",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:iam::111122223333:role/prod-deployer"
+      ],
+      "sid": "AssumeWorkloadRoles",
+      "source": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy",
+      "target": "aws:111122223333:us-east-1/aws_iam_role.deployer",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "digest": "84e9b3295217fce5",
+      "effect": "Allow",
+      "id": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy#stmt:PublishBuildArtifacts",
+      "resolution": "resolved",
+      "resource_patterns": [
+        "arn:aws:s3:::acme-build-artifacts/*"
+      ],
+      "sid": "PublishBuildArtifacts",
+      "source": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy",
+      "target": "aws:999988887777:us-east-1/aws_s3_bucket.artifacts",
+      "type": "grants",
+      "unevaluated": []
+    },
+    {
+      "actions": [],
+      "digest": "c68874d6621cafb2",
+      "effect": null,
+      "id": "aws:999988887777:us-east-1/aws_iam_role.gha#attach:aws_iam_policy.gha_artifacts",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": null,
+      "source": "aws:999988887777:us-east-1/aws_iam_role.gha",
+      "target": "aws:999988887777:us-east-1/aws_iam_policy.gha_artifacts",
+      "type": "attaches",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "digest": "056ba0da0f2e283c",
+      "effect": "Allow",
+      "id": "aws:999988887777:us-east-1/aws_iam_role.gha#trust:aws_iam_openid_connect_provider.github",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": "GitHubActionsOIDC",
+      "source": "aws:999988887777:us-east-1/aws_iam_role.gha",
+      "target": "aws:999988887777:us-east-1/aws_iam_openid_connect_provider.github",
+      "type": "trusted_by",
+      "unevaluated": [
+        "condition"
+      ]
+    },
+    {
+      "actions": [],
+      "digest": "cd3393a96c0c7856",
+      "effect": null,
+      "id": "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#attach:aws_iam_policy.mgmt_deploy",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": null,
+      "source": "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+      "target": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy",
+      "type": "attaches",
+      "unevaluated": []
+    },
+    {
+      "actions": [
+        "sts:AssumeRole"
+      ],
+      "digest": "0f7e0173b9239210",
+      "effect": "Allow",
+      "id": "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy#trust:external.arn:aws:iam::999988887777:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_PlatformOperator_1a2b3c4d5e6f7a8b",
+      "resolution": "resolved",
+      "resource_patterns": [],
+      "sid": "OperatorAssume",
+      "source": "aws:999988887777:us-east-1/external.arn:aws:iam::999988887777:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_PlatformOperator_1a2b3c4d5e6f7a8b",
+      "target": "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+      "type": "can_assume",
+      "unevaluated": []
+    }
+  ],
+  "generated_by": {
+    "extractor_version": "1",
+    "tool_version": "0.1.0"
+  },
+  "modules": [
+    {
+      "children": [
+        {
+          "children": [],
+          "digest": "0d8768654669420a",
+          "path": "mgmt"
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "digest": "3be7d4a711c47131",
+              "path": "module.app"
+            }
+          ],
+          "digest": "e14335a450f8ecfa",
+          "path": "prod"
+        }
+      ],
+      "digest": "4363517f69eddb93",
+      "path": "root"
+    }
+  ],
+  "moves": [],
+  "nodes": [
+    {
+      "aliases": [
+        "arn:aws:iam::111122223333:policy/prod-app-admin"
+      ],
+      "digest": "97078cb4e16b9474",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.app_admin",
+      "logical_address": "aws_iam_policy.app_admin",
+      "name": "prod-app-admin",
+      "properties": {
+        "path": "/"
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "policy",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::111122223333:policy/prod-app-kms-use"
+      ],
+      "digest": "de03bc0df91a3bc7",
+      "id": "aws:111122223333:us-east-1/aws_iam_policy.kms_use",
+      "logical_address": "aws_iam_policy.kms_use",
+      "name": "prod-app-kms-use",
+      "properties": {
+        "path": "/"
+      },
+      "resolution": "unresolved_at_plan",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "policy",
+      "unresolved_attributes": [
+        "policy"
+      ]
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::111122223333:role/prod-app-admin"
+      ],
+      "digest": "b95f58d2a4e22e2b",
+      "id": "aws:111122223333:us-east-1/aws_iam_role.app_admin",
+      "logical_address": "aws_iam_role.app_admin",
+      "name": "prod-app-admin",
+      "properties": {
+        "path": "/",
+        "permissions_boundary": null
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "principal",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::111122223333:role/prod-deployer"
+      ],
+      "digest": "50032aafbebd9712",
+      "id": "aws:111122223333:us-east-1/aws_iam_role.deployer",
+      "logical_address": "aws_iam_role.deployer",
+      "name": "prod-deployer",
+      "properties": {
+        "path": "/",
+        "permissions_boundary": null
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "principal",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [],
+      "digest": "9a96788bd381d57d",
+      "id": "aws:111122223333:us-east-1/aws_iam_role_policy.deployer",
+      "logical_address": "aws_iam_role_policy.deployer",
+      "name": "prod-deployer",
+      "properties": {
+        "inline": true
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "policy",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [],
+      "digest": "f8cee927c340eeeb",
+      "id": "aws:111122223333:us-east-1/aws_kms_key.main",
+      "logical_address": "aws_kms_key.main",
+      "name": null,
+      "properties": {},
+      "resolution": "unresolved_at_plan",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "resource",
+      "unresolved_attributes": [
+        "arn"
+      ]
+    },
+    {
+      "aliases": [
+        "arn:aws:s3:::acme-prod-app-data"
+      ],
+      "digest": "ed6d539914b8d40a",
+      "id": "aws:111122223333:us-east-1/aws_s3_bucket.data",
+      "logical_address": "aws_s3_bucket.data",
+      "name": "acme-prod-app-data",
+      "properties": {},
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "resource",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::555566667777:role/third-party-audit"
+      ],
+      "digest": "7316165791714dd5",
+      "id": "aws:111122223333:us-east-1/external.arn:aws:iam::555566667777:role/third-party-audit",
+      "logical_address": "external.arn:aws:iam::555566667777:role/third-party-audit",
+      "name": null,
+      "properties": {},
+      "resolution": "external",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "external",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:lambda:us-east-1:111122223333:function:app-*"
+      ],
+      "digest": "53a402020c2e826a",
+      "id": "aws:111122223333:us-east-1/external.arn:aws:lambda:us-east-1:111122223333:function:app-*",
+      "logical_address": "external.arn:aws:lambda:us-east-1:111122223333:function:app-*",
+      "name": null,
+      "properties": {},
+      "resolution": "external",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "external",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "lambda.amazonaws.com"
+      ],
+      "digest": "efb26c8c2f831f5b",
+      "id": "aws:111122223333:us-east-1/external.lambda.amazonaws.com",
+      "logical_address": "external.lambda.amazonaws.com",
+      "name": null,
+      "properties": {},
+      "resolution": "external",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "external",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::111122223333:policy/prod-app-data-read"
+      ],
+      "digest": "159bd74062de7fcc",
+      "id": "aws:111122223333:us-east-1/module.app.aws_iam_policy.data_read",
+      "logical_address": "module.app.aws_iam_policy.data_read",
+      "name": "prod-app-data-read",
+      "properties": {
+        "path": "/"
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "policy",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::111122223333:role/prod-app"
+      ],
+      "digest": "bfe2075057bc1af3",
+      "id": "aws:111122223333:us-east-1/module.app.aws_iam_role.this",
+      "logical_address": "module.app.aws_iam_role.this",
+      "name": "prod-app",
+      "properties": {
+        "path": "/",
+        "permissions_boundary": null
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "principal",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [],
+      "digest": "043b2b3655b19bae",
+      "id": "aws:111122223333:us-east-1/wildcard.all",
+      "logical_address": "wildcard.all",
+      "name": null,
+      "properties": {},
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "111122223333",
+        "confidence": "low",
+        "key": "aws:111122223333:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "prod",
+        "source": "variable_heuristic"
+      },
+      "type": "wildcard",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::999988887777:oidc-provider/token.actions.githubusercontent.com"
+      ],
+      "digest": "0fd45fed18a60ba1",
+      "id": "aws:999988887777:us-east-1/aws_iam_openid_connect_provider.github",
+      "logical_address": "aws_iam_openid_connect_provider.github",
+      "name": "token.actions.githubusercontent.com",
+      "properties": {
+        "client_id_list": [
+          "sts.amazonaws.com"
+        ],
+        "url": "https://token.actions.githubusercontent.com"
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "999988887777",
+        "confidence": "low",
+        "key": "aws:999988887777:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "mgmt",
+        "source": "variable_heuristic"
+      },
+      "type": "identity_provider",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::999988887777:policy/gha-artifacts-read"
+      ],
+      "digest": "ccdbf1b2dc3e27bb",
+      "id": "aws:999988887777:us-east-1/aws_iam_policy.gha_artifacts",
+      "logical_address": "aws_iam_policy.gha_artifacts",
+      "name": "gha-artifacts-read",
+      "properties": {
+        "path": "/"
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "999988887777",
+        "confidence": "low",
+        "key": "aws:999988887777:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "mgmt",
+        "source": "variable_heuristic"
+      },
+      "type": "policy",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::999988887777:policy/mgmt-deploy"
+      ],
+      "digest": "53607832794b45fe",
+      "id": "aws:999988887777:us-east-1/aws_iam_policy.mgmt_deploy",
+      "logical_address": "aws_iam_policy.mgmt_deploy",
+      "name": "mgmt-deploy",
+      "properties": {
+        "path": "/"
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "999988887777",
+        "confidence": "low",
+        "key": "aws:999988887777:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "mgmt",
+        "source": "variable_heuristic"
+      },
+      "type": "policy",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::999988887777:role/gha"
+      ],
+      "digest": "35d973ea943adcf5",
+      "id": "aws:999988887777:us-east-1/aws_iam_role.gha",
+      "logical_address": "aws_iam_role.gha",
+      "name": "gha",
+      "properties": {
+        "path": "/",
+        "permissions_boundary": null
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "999988887777",
+        "confidence": "low",
+        "key": "aws:999988887777:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "mgmt",
+        "source": "variable_heuristic"
+      },
+      "type": "principal",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::999988887777:role/mgmt-deploy"
+      ],
+      "digest": "f5b8f73acd860d43",
+      "id": "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+      "logical_address": "aws_iam_role.mgmt_deploy",
+      "name": "mgmt-deploy",
+      "properties": {
+        "path": "/",
+        "permissions_boundary": null
+      },
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "999988887777",
+        "confidence": "low",
+        "key": "aws:999988887777:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "mgmt",
+        "source": "variable_heuristic"
+      },
+      "type": "principal",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:s3:::acme-build-artifacts"
+      ],
+      "digest": "d2158d9d95d948be",
+      "id": "aws:999988887777:us-east-1/aws_s3_bucket.artifacts",
+      "logical_address": "aws_s3_bucket.artifacts",
+      "name": "acme-build-artifacts",
+      "properties": {},
+      "resolution": "resolved",
+      "scope": {
+        "account_id": "999988887777",
+        "confidence": "low",
+        "key": "aws:999988887777:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "mgmt",
+        "source": "variable_heuristic"
+      },
+      "type": "resource",
+      "unresolved_attributes": []
+    },
+    {
+      "aliases": [
+        "arn:aws:iam::999988887777:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_PlatformOperator_1a2b3c4d5e6f7a8b"
+      ],
+      "digest": "95d8b2404b7c6e4d",
+      "id": "aws:999988887777:us-east-1/external.arn:aws:iam::999988887777:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_PlatformOperator_1a2b3c4d5e6f7a8b",
+      "logical_address": "external.arn:aws:iam::999988887777:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_PlatformOperator_1a2b3c4d5e6f7a8b",
+      "name": null,
+      "properties": {},
+      "resolution": "external",
+      "scope": {
+        "account_id": "999988887777",
+        "confidence": "low",
+        "key": "aws:999988887777:us-east-1",
+        "partition": "aws",
+        "region": "us-east-1",
+        "root_module": "mgmt",
+        "source": "variable_heuristic"
+      },
+      "type": "external",
+      "unresolved_attributes": []
+    }
+  ],
+  "schema_version": "1.0",
+  "scopes": [
+    {
+      "account_id": "111122223333",
+      "confidence": "low",
+      "key": "aws:111122223333:us-east-1",
+      "partition": "aws",
+      "region": "us-east-1",
+      "root_module": "prod",
+      "source": "variable_heuristic"
+    },
+    {
+      "account_id": "999988887777",
+      "confidence": "low",
+      "key": "aws:999988887777:us-east-1",
+      "partition": "aws",
+      "region": "us-east-1",
+      "root_module": "mgmt",
+      "source": "variable_heuristic"
+    }
+  ],
+  "warnings": []
+}

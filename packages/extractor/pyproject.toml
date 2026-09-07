@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "archdiff-extractor"
+version = "0.1.0"
+description = "OpenTofu plan JSON -> Permission Graph v1 document"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest", "jsonschema"]
+
+[project.scripts]
+extract = "archdiff_extractor.cli:main"
+
+[tool.setuptools]
+packages = ["archdiff_extractor"]
+
+[tool.setuptools.package-data]
+archdiff_extractor = ["graph.schema.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

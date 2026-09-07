@@ -1,0 +1,185 @@
+{
+  "base": {
+    "graph_digest": "2cc8862700014f6a",
+    "ref": "main"
+  },
+  "findings": [
+    {
+      "detail": "A new trust lets aws_iam_role.gha (mgmt) assume aws_iam_role.contractor in a scope resolved only by variable heuristic (low confidence). The target account may not be the one shown.",
+      "edge_ids": [
+        "aws:444455556666:us-east-1/aws_iam_role.contractor#trust:gha"
+      ],
+      "kind": "cross_scope_path_added",
+      "node_ids": [
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:444455556666:us-east-1/aws_iam_role.contractor"
+      ],
+      "rank": 1,
+      "severity": "high",
+      "title": "gha-role can now assume a role in account 444455556666"
+    },
+    {
+      "detail": "aws_iam_policy.contractor_admin statement Admin grants iam:PassRole, sts:AssumeRole on Resource \"*\". Reachable from gha-role via the new trust.",
+      "edge_ids": [
+        "aws:444455556666:us-east-1/aws_iam_policy.contractor_admin#stmt:Admin"
+      ],
+      "kind": "wildcard_capability_added",
+      "node_ids": [
+        "aws:444455556666:us-east-1/aws_iam_policy.contractor_admin",
+        "aws:444455556666:us-east-1/wildcard.all"
+      ],
+      "rank": 2,
+      "severity": "high",
+      "title": "contractor-deploy gained iam:PassRole and sts:AssumeRole on *"
+    },
+    {
+      "detail": "aws_iam_role.contractor may assume aws_iam_role.app_admin, but the trust carries a Condition that was not evaluated. Treat as unconfirmed until reviewed.",
+      "edge_ids": [
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:contractor"
+      ],
+      "kind": "path_added",
+      "node_ids": [
+        "aws:999988887777:us-east-1/aws_iam_role.gha",
+        "aws:444455556666:us-east-1/aws_iam_role.contractor",
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin"
+      ],
+      "rank": 3,
+      "severity": "medium",
+      "title": "Conditional path from gha-role into prod app-admin via contractor"
+    },
+    {
+      "detail": "The trust from aws_iam_role.mgmt_deploy (mgmt) to aws_iam_role.app_admin (prod) was removed.",
+      "edge_ids": [
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:mgmt"
+      ],
+      "kind": "cross_scope_path_removed",
+      "node_ids": [
+        "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin"
+      ],
+      "rank": 4,
+      "severity": "low",
+      "title": "mgmt-deploy can no longer assume app-admin"
+    }
+  ],
+  "head": {
+    "graph_digest": "bde58f20754a3707",
+    "ref": "pr-3-contractor-trust"
+  },
+  "schema_version": "1.0",
+  "semantic": {
+    "capabilities": {
+      "added": [
+        {
+          "actions": [
+            "iam:PassRole",
+            "sts:AssumeRole"
+          ],
+          "confidence": "confirmed",
+          "principal": "aws:444455556666:us-east-1/aws_iam_role.contractor",
+          "resource_patterns": [
+            "*"
+          ]
+        }
+      ],
+      "removed": []
+    },
+    "paths": {
+      "added": [
+        {
+          "confidence": "confirmed",
+          "crosses_scopes": true,
+          "hops": 1,
+          "path": [
+            "aws:999988887777:us-east-1/aws_iam_role.gha",
+            "aws:444455556666:us-east-1/aws_iam_role.contractor"
+          ],
+          "terminal_capabilities": [
+            "iam:PassRole",
+            "sts:AssumeRole"
+          ]
+        },
+        {
+          "confidence": "conditional",
+          "crosses_scopes": true,
+          "hops": 2,
+          "path": [
+            "aws:999988887777:us-east-1/aws_iam_role.gha",
+            "aws:444455556666:us-east-1/aws_iam_role.contractor",
+            "aws:111122223333:us-east-1/aws_iam_role.app_admin"
+          ],
+          "terminal_capabilities": [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ]
+        }
+      ],
+      "removed": [
+        {
+          "confidence": "confirmed",
+          "crosses_scopes": true,
+          "hops": 2,
+          "path": [
+            "aws:999988887777:us-east-1/aws_iam_role.gha",
+            "aws:999988887777:us-east-1/aws_iam_role.mgmt_deploy",
+            "aws:111122223333:us-east-1/aws_iam_role.app_admin"
+          ],
+          "terminal_capabilities": [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ]
+        }
+      ]
+    }
+  },
+  "stats": {
+    "modules_skipped": 0,
+    "nodes_compared": 13
+  },
+  "structural": {
+    "edges": {
+      "added": [
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:contractor",
+        "aws:444455556666:us-east-1/aws_iam_policy.contractor_admin#stmt:Admin",
+        "aws:444455556666:us-east-1/aws_iam_role.contractor#attach:contractor_admin",
+        "aws:444455556666:us-east-1/aws_iam_role.contractor#trust:gha"
+      ],
+      "changed": [],
+      "removed": [
+        "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:mgmt"
+      ]
+    },
+    "nodes": {
+      "added": [
+        "aws:444455556666:us-east-1/aws_iam_policy.contractor_admin",
+        "aws:444455556666:us-east-1/aws_iam_role.contractor",
+        "aws:444455556666:us-east-1/wildcard.all"
+      ],
+      "changed": [],
+      "removed": []
+    }
+  },
+  "unevaluated": [
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:contractor",
+      "note": "Trust from contractor-deploy guarded by a Condition (likely sts:ExternalId); not evaluated.",
+      "reasons": [
+        "condition"
+      ]
+    },
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_role.app_admin#trust:audit",
+      "note": "Third-party trust guarded by a Condition; not evaluated.",
+      "reasons": [
+        "condition"
+      ]
+    },
+    {
+      "edge_id": "aws:111122223333:us-east-1/aws_iam_policy.kms_use#stmt:unresolved",
+      "note": "Policy body references aws_kms_key.main.arn, unknown at plan time.",
+      "reasons": [
+        "unresolved_policy_body"
+      ]
+    }
+  ]
+}

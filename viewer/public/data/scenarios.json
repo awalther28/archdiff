@@ -1,0 +1,28 @@
+{
+  "scenarios": [
+    {
+      "id": "star-policy",
+      "label": "PR-1 \u00b7 star policy",
+      "summary": "A two-character change widens one statement from two S3 read actions on one bucket to s3:* on *.",
+      "base": "base.graph.json",
+      "head": "head.graph.json",
+      "diff": "expected.diff.json"
+    },
+    {
+      "id": "refactor-noop",
+      "label": "PR-2 \u00b7 module refactor",
+      "summary": "Resources move between root modules and files are renamed. Nothing about permissions changes.",
+      "base": "base.graph.json",
+      "head": "refactor-noop.graph.json",
+      "diff": "refactor-noop.diff.json"
+    },
+    {
+      "id": "contractor-trust",
+      "label": "PR-3 \u00b7 contractor trust",
+      "summary": "A new cross-account trust to a vendor role, one confirmed and one conditional privilege path, a wildcard grant, and a scope the extractor could only guess. Viewer-authored demo data.",
+      "base": "base.graph.json",
+      "head": "head-contractor.graph.json",
+      "diff": "contractor.diff.json"
+    }
+  ]
+}

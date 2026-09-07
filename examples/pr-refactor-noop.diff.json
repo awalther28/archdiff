@@ -1,0 +1,83 @@
+{
+  "base": {
+    "graph_digest": "9fc72c5ed64dc592",
+    "ref": "base"
+  },
+  "empty": true,
+  "findings": [],
+  "head": {
+    "graph_digest": "13169d17b6e3e188",
+    "ref": "head"
+  },
+  "moves_applied": [
+    {
+      "from": "aws_iam_role.deployer",
+      "scope_key": "aws:111122223333:us-east-1",
+      "to": "module.deployer.aws_iam_role.this"
+    },
+    {
+      "from": "aws_iam_role_policy.deployer",
+      "scope_key": "aws:111122223333:us-east-1",
+      "to": "module.deployer.aws_iam_role_policy.this"
+    },
+    {
+      "from": "module.app",
+      "scope_key": "aws:111122223333:us-east-1",
+      "to": "module.workload"
+    }
+  ],
+  "schema_version": "1.0",
+  "semantic": {
+    "capabilities": {
+      "added": [],
+      "removed": []
+    },
+    "paths": {
+      "added": [],
+      "removed": []
+    }
+  },
+  "stats": {
+    "edges_compared": 28,
+    "merkle": {
+      "enabled": false,
+      "fallback_reason": "merkle verification failed: head module 'mgmt': recomputed digest d38f6d8be39f3fbc != document digest 871aede11f45a89c",
+      "prune_points": 0,
+      "verified": false
+    },
+    "modules_compared": 5,
+    "modules_skipped": 0,
+    "modules_total": 5,
+    "nodes_compared": 20,
+    "semantic": {
+      "max_hops": 4,
+      "mode": "incremental",
+      "paths_enumerated": 0,
+      "principals_evaluated": 0
+    },
+    "unevaluated_edges_in_head": 3
+  },
+  "structural": {
+    "edges": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "nodes": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    }
+  },
+  "tool": {
+    "catalog": "bundled-2026-09",
+    "catalog_services": "iam, kms, s3, secretsmanager, sts",
+    "limits": "wildcard expansion covers only the bundled catalog (bundled-2026-09: s3, sts, iam, kms, secretsmanager); privilege paths bounded to 4 hops",
+    "name": "permdiff",
+    "version": "0.1.0"
+  },
+  "unevaluated": [],
+  "warnings": [
+    "merkle prune not used: merkle verification failed: head module 'mgmt': recomputed digest d38f6d8be39f3fbc != document digest 871aede11f45a89c"
+  ]
+}

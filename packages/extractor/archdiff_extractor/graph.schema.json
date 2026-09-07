@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/permission-graph/v1/graph.schema.json",
+  "title": "Permission Graph v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_by",
+    "scopes",
+    "modules",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "generated_by": {
+      "type": "object",
+      "required": [
+        "tool_version",
+        "extractor_version"
+      ],
+      "properties": {
+        "tool_version": {
+          "type": "string"
+        },
+        "extractor_version": {
+          "type": "string"
+        }
+      }
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scope"
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/module"
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "moves": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/move"
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$"
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "key",
+        "partition",
+        "account_id",
+        "region",
+        "source",
+        "confidence"
+      ],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "partition": {
+          "type": "string"
+        },
+        "account_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "region": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "enum": [
+            "explicit",
+            "provider_config",
+            "variable_declared",
+            "terragrunt_unit",
+            "variable_heuristic",
+            "fallback"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "root_module": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Informational only. MUST NOT affect any digest."
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Signals that produced this scope, e.g. variable_validation:<regex>, arn_corroboration:<n>, variable_name:<name>. MUST be surfaced wherever confidence is warned about."
+        }
+      }
+    },
+    "module": {
+      "type": "object",
+      "required": [
+        "path",
+        "digest"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/module"
+          }
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "scope",
+        "logical_address",
+        "resolution",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "principal",
+            "policy",
+            "resource",
+            "identity_provider",
+            "external",
+            "wildcard"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "logical_address": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Predicted ARNs. Join key for reference resolution ONLY; never identity."
+        },
+        "resolution": {
+          "enum": [
+            "resolved",
+            "unresolved_at_plan",
+            "external"
+          ]
+        },
+        "unresolved_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "source",
+        "target",
+        "resolution",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "attaches",
+            "can_assume",
+            "trusted_by",
+            "grants"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "description": "For can_assume: the principal that CAN ASSUME the target."
+        },
+        "target": {
+          "type": "string"
+        },
+        "effect": {
+          "enum": [
+            "Allow",
+            "Deny",
+            null
+          ]
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resource_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolution": {
+          "enum": [
+            "resolved",
+            "unresolved_at_plan",
+            "external"
+          ]
+        },
+        "unevaluated": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "condition",
+              "unresolved_policy_body",
+              "not_action",
+              "resource_policy"
+            ]
+          }
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "move": {
+      "type": "object",
+      "required": [
+        "scope_key",
+        "from",
+        "to"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scope_key": {
+          "type": "string"
+        },
+        "from": {
+          "type": "string",
+          "description": "Old address. PREFIX match: also matches everything beneath it."
+        },
+        "to": {
+          "type": "string",
+          "description": "New address."
+        }
+      }
+    }
+  }
+}

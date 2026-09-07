@@ -79,7 +79,9 @@ export function layoutGraph(g: UnionGraph): Layout {
     rankdir: 'TB',
     // dagre doubles rank slots for compound graphs (cluster border ranks), so
     // the visible gap between node rows is roughly NODE_H + 3 * ranksep.
-    ranksep: 22,
+    // Roomy enough that a cluster growing upward to hold its header (see the
+    // post-layout pass below) cannot collide with a cluster ranked above it.
+    ranksep: 44,
     nodesep: 20,
     edgesep: 14,
     marginx: 16,
@@ -113,10 +115,17 @@ export function layoutGraph(g: UnionGraph): Layout {
 
   dagre.layout(dg);
 
+  // dagre does not reliably honour per-side cluster padding, so paddingTop is
+  // not enough on its own and the scope header ends up drawn underneath the
+  // first node. Reserve the space after layout instead: shift every element
+  // down by the header height, then grow each cluster box upward to reclaim it.
+  // Relative geometry is untouched, so the layout stays deterministic.
+  const shift = CLUSTER_HEADER;
+
   const outNodes = new Map<string, NodeBox>();
   for (const n of nodes) {
     const p = dg.node(n.id);
-    outNodes.set(n.id, { id: n.id, x: round(p.x), y: round(p.y), width: p.width, height: p.height });
+    outNodes.set(n.id, { id: n.id, x: round(p.x), y: round(p.y + shift), width: p.width, height: p.height });
   }
 
   const outEdges = new Map<string, EdgePath>();
@@ -125,7 +134,7 @@ export function layoutGraph(g: UnionGraph): Layout {
     const reversed = RANK_REVERSED.has(e.type);
     const [from, to] = reversed ? [e.target, e.source] : [e.source, e.target];
     const lbl = dg.edge(from, to, e.key) as { points?: Point[] } | undefined;
-    let pts = (lbl?.points ?? []).map((p) => ({ x: round(p.x), y: round(p.y) }));
+    let pts = (lbl?.points ?? []).map((p) => ({ x: round(p.x), y: round(p.y + shift) }));
     if (reversed) pts = [...pts].reverse();
     outEdges.set(e.key, { key: e.key, id: e.id, points: pts });
   }
@@ -134,11 +143,13 @@ export function layoutGraph(g: UnionGraph): Layout {
   for (const s of scopes) {
     const c = dg.node(clusterId(s.key)) as { x: number; y: number; width: number; height: number } | undefined;
     if (!c || !Number.isFinite(c.x)) continue;
-    outClusters.set(s.key, { key: s.key, x: round(c.x - c.width / 2), y: round(c.y - c.height / 2), width: round(c.width), height: round(c.height) });
+    // top edge stays put while the contents move down: the difference is the
+    // band the header is drawn into.
+    outClusters.set(s.key, { key: s.key, x: round(c.x - c.width / 2), y: round(c.y - c.height / 2), width: round(c.width), height: round(c.height + shift) });
   }
 
   const gi = dg.graph() as { width?: number; height?: number };
-  return { nodes: outNodes, edges: outEdges, clusters: outClusters, width: round(gi.width ?? 0), height: round(gi.height ?? 0) };
+  return { nodes: outNodes, edges: outEdges, clusters: outClusters, width: round(gi.width ?? 0), height: round((gi.height ?? 0) + shift) };
 }
 
 function clusterId(scopeKey: string): string {
